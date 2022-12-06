@@ -8,7 +8,7 @@ import {
   Image,
 } from "react-native";
 import React, { useState } from "react";
-import { Ionicons, Entypo } from "@expo/vector-icons";
+import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Books } from "../../mocks/Books";
 
 const NewsScreen = ({ navigation }) => {
@@ -18,22 +18,32 @@ const NewsScreen = ({ navigation }) => {
     <View className="flex-1 bg-[#e5e5e5] p-5">
       <TouchableOpacity
         onPress={() => navigation.goBack()}
-        className={Platform.OS === "android" && "mt-10"}
+        className={`${
+          Platform.OS === "android" && "mt-10"
+        } mb-5 flex-row items-center`}
       >
-        <Ionicons name="arrow-back-outline" size={32} color="black" />
+        <Entypo name="chevron-down" size={32} color="#F26E1D" />
+        <Text className="text-[#F26E1D] text-lg">Início</Text>
       </TouchableOpacity>
 
-      <Text className="text-gray-600 font-semibold text-2xl mt-5">
-        Novidades
-      </Text>
+      <View className="flex-row items-center justify-between my-5">
+        <Text className="text-gray-600 font-semibold text-2xl">Novidades</Text>
+        <MaterialCommunityIcons
+          name="newspaper-check"
+          size={28}
+          color="#F26E1D"
+        />
+      </View>
 
       <FlatList
         data={books}
-        style={{ marginTop: 24 }}
+        style={{ marginTop: 16 }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ marginVertical: 20, paddingBottom: 20 }}
         keyExtractor={(item) => item.id}
         renderItem={({ item: book }) => {
           return (
-            <View className="flex-row space-x-3 mb-4 p-2 shadow bg-[#f5f5f5] rounded">
+            <View className="flex-row mr-1 space-x-3 mb-4 p-2 shadow bg-[#f5f5f5] rounded">
               <Image
                 source={{ uri: book.imageUrl }}
                 resizeMode="cover"
@@ -49,9 +59,17 @@ const NewsScreen = ({ navigation }) => {
                   </View>
                   <Entypo name="dots-three-vertical" size={20} color="#ccc" />
                 </View>
-                <Text className="text-gray-400 text-xs">
-                  Adicionado há 2 semanas
-                </Text>
+                <View className="flex-row items-center space-x-1">
+                  <MaterialCommunityIcons
+                    name="clock-check-outline"
+                    size={20}
+                    color="#048444"
+                    className="opacity-40"
+                  />
+                  <Text className="text-[#048444] opacity-50 text-xs">
+                    Adicionado há 2 semanas
+                  </Text>
+                </View>
               </View>
             </View>
           );

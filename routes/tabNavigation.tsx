@@ -16,11 +16,11 @@ export const TabNavigation = () => {
           headerShown: false,
           tabBarIcon: ({ color, focused }) => {
             if (focused) {
-              return <Octicons name="home" size={24} color={color} />;
+              return <Octicons name="home" size={20} color={color} />;
             }
-            return <Octicons name="home" size={24} color="#747C7C" />;
+            return <Octicons name="home" size={20} color="#747C7C" />;
           },
-          tabBarShowLabel: false,
+          tabBarLabel: "Início",
           tabBarActiveTintColor: "#F26E1D",
         }}
       />
@@ -32,11 +32,11 @@ export const TabNavigation = () => {
           headerShown: false,
           tabBarIcon: ({ color, focused }) => {
             if (focused) {
-              return <Ionicons name="ios-heart" size={28} color={color} />;
+              return <Ionicons name="ios-heart" size={24} color={color} />;
             }
-            return <Ionicons name="heart-outline" size={28} color="#747C7C" />;
+            return <Ionicons name="heart-outline" size={24} color="#747C7C" />;
           },
-          tabBarShowLabel: false,
+          tabBarLabel: "Favoritos",
           tabBarActiveTintColor: "#F26E1D",
         }}
       />
@@ -48,11 +48,11 @@ export const TabNavigation = () => {
           headerShown: false,
           tabBarIcon: ({ color, focused }) => {
             if (focused) {
-              return <Ionicons name="ios-person" size={24} color={color} />;
+              return <Ionicons name="ios-person" size={20} color={color} />;
             }
-            return <Ionicons name="person-outline" size={24} color="#747C7C" />;
+            return <Ionicons name="person-outline" size={20} color="#747C7C" />;
           },
-          tabBarShowLabel: false,
+          tabBarLabel: "Perfil",
           tabBarActiveTintColor: "#F26E1D",
         }}
       />

@@ -113,12 +113,12 @@ const HomeScreen = () => {
                 stars: book.stars,
               });
             }}
-            className="mr-3 w-32 h-66 bg-[#f5f5f5]"
+            className="mr-8 w-32 h-66 bg-[#f5f5f5]"
             key={book.id}
           >
             <Image
               source={{ uri: book.imageUrl }}
-              className="h-48 w-32 rounded-lg"
+              className="h-48 w-36 rounded-lg"
               resizeMode="cover"
             />
 

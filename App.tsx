@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import InitialScreen from "./screens/InitialScreen";
@@ -11,6 +10,8 @@ import BookDetailScreen from "./screens/BookDetailScreen";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./services/firebase";
 import NewsScreen from "./screens/NewsScreen";
+import SelectedBook from "./screens/SelectedBook";
+import AudioPlayer from "./screens/AudioPlayer";
 
 const Stack = createStackNavigator();
 
@@ -64,6 +65,16 @@ export default function App() {
             <Stack.Screen
               component={NewsScreen}
               name="NewsScreen"
+              options={{ headerShown: false, presentation: "modal" }}
+            />
+            <Stack.Screen
+              component={SelectedBook}
+              name="SelectedBook"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              component={AudioPlayer}
+              name="AudioPlayer"
               options={{ headerShown: false, presentation: "modal" }}
             />
           </>

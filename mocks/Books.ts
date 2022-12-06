@@ -20,4 +20,12 @@ export const Books = [
     author: "Bruce R. Maxim",
     stars: 4.5,
   },
+  {
+    id: 4,
+    title: "Engenharia de Requisitos",
+    imageUrl:
+      "https://dl4326nmjp5rc.cloudfront.net/Custom/Content/Products/10/07/1007418_eb-ead-engenharia-requisitos9786556900674_l1_637342160438970818.jpg",
+    author: "Sheila Reinehr",
+    stars: 4.5,
+  },
 ];
