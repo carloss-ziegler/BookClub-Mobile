@@ -1,11 +1,8 @@
 // @ts-nocheck
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
 
-const InitialScreen = () => {
-  const navigation = useNavigation();
-
+const InitialScreen = ({ navigation }) => {
   return (
     <View className="flex-1 bg-[#F26E1D] items-center">
       <Image

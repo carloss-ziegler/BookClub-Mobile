@@ -81,6 +81,7 @@ const LoginScreen = () => {
                 secureTextEntry
                 returnKeyType="send"
                 returnKeyLabel="Enviar"
+                onSubmitEditing={login}
               />
             </View>
 

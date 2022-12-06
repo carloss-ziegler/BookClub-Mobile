@@ -5,7 +5,7 @@ import { Entypo, AntDesign } from "@expo/vector-icons";
 import { signOut } from "firebase/auth";
 import { auth } from "../../services/firebase";
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
@@ -13,6 +13,7 @@ const ProfileScreen = () => {
     await signOut(auth)
       .then(() => {
         console.log("Saiu");
+        navigation.replace("InitialScreen");
       })
       .catch((error) => {
         console.log(error);
@@ -39,16 +40,22 @@ const ProfileScreen = () => {
         </View>
         <View className="space-y-8 mt-10">
           <Text className="text-gray-400">Configurações de conta</Text>
-          <TouchableOpacity className="flex-row items-center justify-between">
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ChangePassword")}
+            className="flex-row items-center justify-between"
+          >
             <Text className="text-gray-600 font-medium">Alterar senha</Text>
             <Entypo name="chevron-right" size={20} color="#444C4C" />
           </TouchableOpacity>
+
           <TouchableOpacity className="flex-row items-center justify-between">
             <Text className="text-gray-600 font-medium">
               Alterar forma de pagamento
             </Text>
             <AntDesign name="plus" size={20} color="#444C4C" />
           </TouchableOpacity>
+
           <TouchableOpacity className="flex-row items-center justify-between">
             <Text className="text-gray-600 font-medium">
               Ativar notificações
@@ -72,14 +79,17 @@ const ProfileScreen = () => {
             <Text>Sobre nós</Text>
             <Entypo name="chevron-right" size={20} color="#444C4C" />
           </TouchableOpacity>
+
           <TouchableOpacity className="flex-row items-center justify-between">
             <Text>Política de privacidade</Text>
             <Entypo name="chevron-right" size={20} color="#444C4C" />
           </TouchableOpacity>
+
           <TouchableOpacity className="flex-row items-center justify-between">
             <Text>Termos e condições</Text>
             <Entypo name="chevron-right" size={20} color="#444C4C" />
           </TouchableOpacity>
+
           <TouchableOpacity onPress={handleLogout}>
             <Text className="text-red-600 text-lg">Sair</Text>
           </TouchableOpacity>
