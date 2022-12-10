@@ -4478,6 +4478,11 @@ inline-style-prefixer@^6.0.1:
     css-in-js-utils "^3.1.0"
     fast-loops "^1.1.3"
 
+install-peer@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/install-peer/-/install-peer-1.4.0.tgz#62fcbf84415001cc5ff81731f12de5799c6f6740"
+  integrity sha512-njk2BHp1W/joExiXWbDKaTXEGy9TTwOfpEHGLQrVPjD8+bifYyuK9/q5Jptrc4g9vs15bOCXdtQzGtRrqSyPRA==
+
 internal-ip@4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/internal-ip/-/internal-ip-4.3.0.tgz#845452baad9d2ca3b69c635a137acb9a0dad0907"

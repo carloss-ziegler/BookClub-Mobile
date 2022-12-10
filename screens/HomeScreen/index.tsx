@@ -8,7 +8,7 @@ import {
   FlatList,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MaterialIcons,
   MaterialCommunityIcons,
@@ -17,13 +17,39 @@ import {
   Ionicons,
 } from "@expo/vector-icons";
 import { Genres } from "../../mocks/Genres";
-import { Books } from "../../mocks/Books";
 import { useNavigation } from "@react-navigation/native";
+import { Books } from "../../mocks/Books";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../../services/firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 const HomeScreen = () => {
   const [genres] = useState(Genres);
-  const [books] = useState(Books);
+  const [books, setBooks] = useState([]);
+  const [userEmail, setUserEmail] = useState("");
   const navigation = useNavigation();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      setUserEmail(user?.email);
+    });
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let list = [];
+      try {
+        const querySnapshot = await getDocs(collection(db, "books"));
+        querySnapshot.forEach((doc) => {
+          list.push({ id: doc.id, ...doc.data() });
+        });
+        setBooks(list);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <View className="bg-[#f5f5f5] px-4">
@@ -55,12 +81,20 @@ const HomeScreen = () => {
       </View>
 
       <View className="mt-4 space-y-1">
-        <Text className="text-gray-600 font-semibold text-2xl">
-          Olá, <Text className="text-[#F26E1D]">André Lima</Text>
-        </Text>
-        <Text className="text-gray-600 font-semibold">
-          O que você quer ler hoje?
-        </Text>
+        {userEmail === "admin@gmail.com" ? (
+          <Text className="text-gray-600 font-semibold text-2xl">
+            Bem vindo, <Text className="text-[#F26E1D]">Administrador</Text>!
+          </Text>
+        ) : (
+          <>
+            <Text className="text-gray-600 font-semibold text-2xl">
+              Olá, <Text className="text-[#F26E1D]">André Lima</Text>
+            </Text>
+            <Text className="text-gray-600 font-semibold">
+              O que você quer ler hoje?
+            </Text>
+          </>
+        )}
       </View>
 
       <View className="flex-row items-center justify-between border border-[#cccccccc] bg-white p-3 rounded mt-4">
@@ -103,7 +137,7 @@ const HomeScreen = () => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ backgroundColor: "#f5f5f5" }}
       >
-        {books.map((book) => (
+        {books?.map((book) => (
           <TouchableOpacity
             onPress={() => {
               navigation.navigate("BookDetail", {
@@ -114,20 +148,20 @@ const HomeScreen = () => {
               });
             }}
             className="mr-8 w-32 h-66 bg-[#f5f5f5]"
-            key={book.id}
+            key={book?.id}
           >
             <Image
-              source={{ uri: book.imageUrl }}
+              source={{ uri: book?.imageUrl }}
               className="h-48 w-36 rounded-lg"
               resizeMode="cover"
             />
 
             <Text className="text-gray-600 font-semibold text-base">
-              {book.title}
+              {book?.title}
             </Text>
 
             <Text className="text-xs text-gray-400 font-medium">
-              {book.author}
+              {book?.author}
             </Text>
           </TouchableOpacity>
         ))}

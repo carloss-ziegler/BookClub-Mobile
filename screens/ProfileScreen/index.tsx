@@ -1,13 +1,20 @@
 // @ts-nocheck
 import { View, Text, Image, TouchableOpacity, Switch } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Entypo, AntDesign } from "@expo/vector-icons";
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../services/firebase";
 
 const ProfileScreen = ({ navigation }) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+  const [userEmail, setUserEmail] = useState("");
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      setUserEmail(user?.email);
+    });
+  }, []);
 
   async function handleLogout() {
     await signOut(auth)
@@ -55,6 +62,15 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
             <AntDesign name="plus" size={20} color="#444C4C" />
           </TouchableOpacity>
+
+          {userEmail === "admin@gmail.com" && (
+            <TouchableOpacity className="flex-row items-center justify-between">
+              <Text className="text-gray-600 font-medium">
+                Cadastrar produtos
+              </Text>
+              <AntDesign name="plus" size={20} color="#444C4C" />
+            </TouchableOpacity>
+          )}
 
           <TouchableOpacity className="flex-row items-center justify-between">
             <Text className="text-gray-600 font-medium">
