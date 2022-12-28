@@ -18,18 +18,17 @@ import {
 } from "@expo/vector-icons";
 import { Genres } from "../../mocks/Genres";
 import { useNavigation } from "@react-navigation/native";
-import { Books } from "../../mocks/Books";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../services/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
   const [genres] = useState(Genres);
   const [books, setBooks] = useState([]);
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState();
   const [loading, setLoading] = useState(false);
-  const navigation = useNavigation();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -59,9 +58,22 @@ const HomeScreen = () => {
   return (
     <View className="bg-[#f5f5f5] px-4">
       <View className="flex-row items-center justify-between mt-10">
-        <TouchableOpacity>
-          <MaterialIcons name="menu-open" size={32} color="black" />
-        </TouchableOpacity>
+        <View className="mt-4 space-y-1">
+          {userEmail === "admin@gmail.com" ? (
+            <Text className="text-gray-600 font-semibold text-2xl">
+              Bem vindo, <Text className="text-[#F26E1D]">Administrador</Text>!
+            </Text>
+          ) : (
+            <>
+              <Text className="text-gray-600 font-semibold text-2xl">
+                Olá, <Text className="text-[#F26E1D]">{userName}</Text>!
+              </Text>
+              <Text className="text-gray-600 font-semibold">
+                O que você quer ler hoje?
+              </Text>
+            </>
+          )}
+        </View>
 
         <View className="flex-row items-center space-x-3">
           <View>
@@ -83,23 +95,6 @@ const HomeScreen = () => {
             />
           </TouchableOpacity>
         </View>
-      </View>
-
-      <View className="mt-4 space-y-1">
-        {userEmail === "admin@gmail.com" ? (
-          <Text className="text-gray-600 font-semibold text-2xl">
-            Bem vindo, <Text className="text-[#F26E1D]">Administrador</Text>!
-          </Text>
-        ) : (
-          <>
-            <Text className="text-gray-600 font-semibold text-2xl">
-              Olá, <Text className="text-[#F26E1D]">{userName}</Text>!
-            </Text>
-            <Text className="text-gray-600 font-semibold">
-              O que você quer ler hoje?
-            </Text>
-          </>
-        )}
       </View>
 
       <View className="flex-row items-center justify-between border border-[#cccccccc] bg-white p-3 rounded mt-4">

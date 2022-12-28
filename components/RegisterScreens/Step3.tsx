@@ -50,7 +50,7 @@ const Step3 = ({
           }}
           placeholder="Número do cartão"
           className="flex-1"
-          keyboardType="numeric"
+          keyboardType="number-pad"
         />
 
         <AntDesign name="creditcard" size={20} color="gray" />
