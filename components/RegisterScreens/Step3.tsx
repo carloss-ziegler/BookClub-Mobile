@@ -8,18 +8,22 @@ interface Step3Props {
   cardNumber: string;
   cardName: string;
   expiryDate: string;
+  cvv: string;
   setCardNumber: () => void;
   setCardName: () => void;
   setExpiryDate: () => void;
+  setCvv: () => void;
 }
 
 const Step3 = ({
   cardName,
   cardNumber,
   expiryDate,
+  cvv,
   setCardName,
   setCardNumber,
   setExpiryDate,
+  setCvv,
 }: Step3Props) => {
   return (
     <KeyboardAwareScrollView
@@ -81,7 +85,13 @@ const Step3 = ({
       </View>
 
       <View className="w-full mt-4 border border-[#33333333] flex-row rounded items-center px-3 h-14 bg-white">
-        <TextInput placeholder="Código de segurança (CVV)" className="flex-1" />
+        <TextInput
+          value={cvv}
+          onChangeText={(value) => setCvv(value)}
+          placeholder="Código de segurança (CVV)"
+          className="flex-1"
+          keyboardType="numeric"
+        />
 
         <AntDesign name="checkcircleo" size={20} color="gray" />
       </View>

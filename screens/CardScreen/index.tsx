@@ -14,10 +14,18 @@ import { auth, db } from "../../services/firebase";
 import Card from "../../assets/images/card.png";
 import { collection, getDocs } from "firebase/firestore";
 
+interface CardProps {
+  id: string;
+  cardName: string;
+  cardNumber: string;
+  expiryDate: string;
+  cvv: string;
+}
+
 const CardScreen = ({ navigation }) => {
   const name = auth.currentUser?.displayName;
   const email = auth.currentUser?.email;
-  const [cardData, setCardData] = useState([]);
+  const [cardData, setCardData] = useState<CardProps[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -51,7 +59,7 @@ const CardScreen = ({ navigation }) => {
         </TouchableOpacity>
 
         <Text className="text-gray-500 font-bold flex-1 text-center text-xl">
-          Métodos de Pagamento
+          Pagamento
         </Text>
 
         <View className="flex-1" />
@@ -95,40 +103,58 @@ const CardScreen = ({ navigation }) => {
           snapToAlignment="center"
         >
           {cardData?.map((item, index) => (
-            <ImageBackground
-              key={item?.id}
-              source={Card}
-              className={`w-full h-44 ${index > 0 && "mt-3"}`}
-              imageStyle={{
-                borderRadius: 8,
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("CardDetails", {
+                  id: item?.id,
+                  cardNumber: item?.cardNumber,
+                  cardName: item?.cardName,
+                  expiryDate: item?.expiryDate,
+                  cvv: item?.cvv,
+                });
               }}
+              key={item?.id}
             >
-              <Image
-                source={{
-                  uri: "https://logosmarcas.net/wp-content/uploads/2020/09/Mastercard-Logo.png",
+              <ImageBackground
+                source={Card}
+                className={`w-full h-44 ${index > 0 && "mt-3"}`}
+                imageStyle={{
+                  borderRadius: 8,
                 }}
-                className="h-12 w-12 absolute right-3"
-                resizeMode="contain"
-              />
+              >
+                <View className="absolute top-4 left-4">
+                  <Text className="text-[#f5f5f5] font-semibold">
+                    **{item?.cvv.charAt(item?.cvv.length - 1)}
+                  </Text>
+                </View>
 
-              <View className="absolute bottom-10 left-5">
-                <Text className="text-lg text-[#f5f5f5] font-semibold">
-                  {item?.cardNumber}
-                </Text>
-              </View>
+                <Image
+                  source={{
+                    uri: "https://logosmarcas.net/wp-content/uploads/2020/09/Mastercard-Logo.png",
+                  }}
+                  className="h-12 w-12 absolute right-3"
+                  resizeMode="contain"
+                />
 
-              <View className="absolute bottom-5 right-5">
-                <Text className="text-[#f5f5f5] font-semibold">
-                  {item?.expiryDate}
-                </Text>
-              </View>
+                <View className="absolute bottom-10 left-5">
+                  <Text className="text-lg text-[#f5f5f5] font-semibold">
+                    {item?.cardNumber}
+                  </Text>
+                </View>
 
-              <View className="absolute bottom-5 left-5">
-                <Text className="text-[#f5f5f5] font-semibold">
-                  {item?.cardName}
-                </Text>
-              </View>
-            </ImageBackground>
+                <View className="absolute bottom-5 right-5">
+                  <Text className="text-[#f5f5f5] font-semibold">
+                    {item?.expiryDate}
+                  </Text>
+                </View>
+
+                <View className="absolute bottom-5 left-5">
+                  <Text className="text-[#f5f5f5] font-semibold">
+                    {item?.cardName}
+                  </Text>
+                </View>
+              </ImageBackground>
+            </TouchableOpacity>
           ))}
         </ScrollView>
       )}

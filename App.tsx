@@ -17,6 +17,7 @@ import Privacy from "./screens/Privacy";
 import Terms from "./screens/Terms";
 import CardScreen from "./screens/CardScreen";
 import NewCard from "./screens/NewCard";
+import CardDetails from "./screens/CardDetails";
 
 const Stack = createStackNavigator();
 
@@ -93,6 +94,11 @@ export default function App() {
           component={NewCard}
           name="NewCard"
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          component={CardDetails}
+          name="CardDetails"
+          options={{ headerShown: false, presentation: "modal" }}
         />
         <Stack.Screen
           component={AudioPlayer}

@@ -51,7 +51,7 @@ const NewCard = ({ navigation }) => {
       behavior="height"
       className="h-screen bg-[#f5f5f5] px-4 py-6"
     >
-      <View className="items-center flex-row justify-between">
+      <View className="items-center flex-row justify-between mt-3">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           className="flex-1 flex-row items-center -ml-1"
@@ -61,7 +61,7 @@ const NewCard = ({ navigation }) => {
         </TouchableOpacity>
 
         <Text className="text-gray-500 font-bold flex-1 text-center text-xl">
-          Cadastrar Cartão
+          Novo Cartão
         </Text>
 
         <View className="flex-1" />

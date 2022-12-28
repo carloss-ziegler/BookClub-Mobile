@@ -20,7 +20,8 @@ import Step1 from "../../components/RegisterScreens/Step1";
 import Step2 from "../../components/RegisterScreens/Step2";
 import Step3 from "../../components/RegisterScreens/Step3";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../../services/firebase";
+import { auth, db } from "../../services/firebase";
+import { addDoc, collection } from "firebase/firestore";
 
 const RegisterScreen = ({ navigation }) => {
   const [page, setPage] = useState(1);
@@ -34,6 +35,7 @@ const RegisterScreen = ({ navigation }) => {
   const [cardNumber, setCardNumber] = useState("");
   const [cardName, setCardName] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -50,6 +52,29 @@ const RegisterScreen = ({ navigation }) => {
       }
     );
     setLoading(false);
+  }
+
+  async function handleAddCard() {
+    await addDoc(collection(db, "cards"), {
+      cardName: cardName,
+      cardNumber: cardNumber,
+      cvv: cvv,
+      expiryDate: expiryDate,
+    })
+      .then(() => {
+        console.log("sucesso");
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }
+
+  function finishRegister() {
+    Promise.all([handleRegister(), handleAddCard()]).then(
+      ([registerResponse, cardResponse]) => {
+        setLoading(false);
+      }
+    );
   }
 
   return (
@@ -130,6 +155,8 @@ const RegisterScreen = ({ navigation }) => {
               setCardName={setCardName}
               expiryDate={expiryDate}
               setExpiryDate={setExpiryDate}
+              cvv={cvv}
+              setCvv={setCvv}
             />
           )}
         </View>
@@ -146,8 +173,14 @@ const RegisterScreen = ({ navigation }) => {
               setPage(page + 1);
             } else if (page == 2 && isSelected != undefined) {
               setPage(page + 1);
-            } else if (page == 3 && cardNumber && cardName && expiryDate) {
-              handleRegister();
+            } else if (
+              page == 3 &&
+              cardNumber &&
+              cardName &&
+              expiryDate &&
+              cvv
+            ) {
+              finishRegister();
             } else {
               alert("Preencha todos os campos!");
             }
