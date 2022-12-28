@@ -1,9 +1,12 @@
 // @ts-nocheck
-import { Text, TouchableOpacity, View, ScrollView } from "react-native";
-import React, { useState } from "react";
+import { Text, TouchableOpacity, ScrollView } from "react-native";
+import React, { useRef, useState } from "react";
 
 const Step2 = () => {
   const [isSelected, setIsSelected] = useState();
+  const monthlyRef = useRef();
+  const trimestralRef = useRef();
+  const yearRef = useRef();
 
   return (
     <ScrollView
@@ -16,7 +19,15 @@ const Step2 = () => {
       }}
       showsVerticalScrollIndicator={false}
     >
-      <TouchableOpacity className="bg-red-500 p-4 mx-4 rounded-lg">
+      <TouchableOpacity
+        ref={monthlyRef}
+        className={`${
+          isSelected == monthlyRef ? "opacity-100" : "opacity-40"
+        } p-4 mx-4 rounded-lg bg-red-500`}
+        onPress={() => {
+          setIsSelected(monthlyRef);
+        }}
+      >
         <Text className="text-[#f5f5f5] text-center text-lg font-semibold">
           Assinatura Mensal
         </Text>
@@ -32,7 +43,15 @@ const Step2 = () => {
         </TouchableOpacity>
       </TouchableOpacity>
 
-      <TouchableOpacity className="bg-red-500 mt-5 p-4 mx-4 rounded-lg">
+      <TouchableOpacity
+        ref={trimestralRef}
+        className={`${
+          isSelected == trimestralRef ? "opacity-100" : "opacity-40"
+        } p-4 mx-4 rounded-lg mt-5 bg-red-500`}
+        onPress={() => {
+          setIsSelected(trimestralRef);
+        }}
+      >
         <Text className="text-[#f5f5f5] text-center text-lg font-semibold">
           Assinatura Trimestral
         </Text>
@@ -48,7 +67,15 @@ const Step2 = () => {
         </TouchableOpacity>
       </TouchableOpacity>
 
-      <TouchableOpacity className="bg-red-500 mt-5 p-4 mx-4 rounded-lg">
+      <TouchableOpacity
+        ref={yearRef}
+        className={`${
+          isSelected == yearRef ? "opacity-100" : "opacity-40"
+        } p-4 mx-4 rounded-lg mt-5 bg-red-500`}
+        onPress={() => {
+          setIsSelected(yearRef);
+        }}
+      >
         <Text className="text-[#f5f5f5] text-center text-lg font-semibold">
           Assinatura Anual
         </Text>

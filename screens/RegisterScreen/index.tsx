@@ -9,10 +9,13 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  Platform,
+  ImageBackground,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
 import Logo from "../../assets/images/logoOrange.png";
+import Card from "../../assets/images/card.png";
 import Step1 from "../../components/RegisterScreens/Step1";
 import Step2 from "../../components/RegisterScreens/Step2";
 import Step3 from "../../components/RegisterScreens/Step3";
@@ -24,6 +27,12 @@ const RegisterScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardName, setCardName] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+
   const [loading, setLoading] = useState(false);
 
   async function handleRegister() {
@@ -34,7 +43,7 @@ const RegisterScreen = ({ navigation }) => {
           displayName: name,
         });
         navigation.reset({
-          routes: [{ name: "InitialScreen" }],
+          routes: [{ name: "Actions" }],
         });
       }
     );
@@ -43,13 +52,46 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView className="h-screen px-3 bg[#f5f5f5]">
-        <Image
-          source={Logo}
-          className={`w-44 h-44 self-center ${
-            Platform.OS === "android" ? "mt-7" : "mt-5"
-          }`}
-        />
+      <KeyboardAvoidingView
+        behavior="height"
+        className="h-screen px-3 bg[#f5f5f5]"
+      >
+        {page == 3 ? (
+          <>
+            <ImageBackground
+              source={Card}
+              className="w-full h-44 self-center mt-8 mb-3"
+              imageStyle={{
+                borderRadius: 8,
+              }}
+            >
+              <View className="absolute bottom-10 left-5">
+                <Text className="text-lg text-[#f5f5f5] font-semibold">
+                  {cardNumber}
+                </Text>
+              </View>
+
+              <View className="absolute bottom-5 right-5">
+                <Text className="text-[#f5f5f5] font-semibold">
+                  {expiryDate}
+                </Text>
+              </View>
+
+              <View className="absolute bottom-5 left-5">
+                <Text className="text-[#f5f5f5] font-semibold">{cardName}</Text>
+              </View>
+            </ImageBackground>
+          </>
+        ) : (
+          <>
+            <Image
+              source={Logo}
+              className={`w-44 h-44 self-center ${
+                Platform.OS === "android" ? "mt-7" : "mt-5"
+              }`}
+            />
+          </>
+        )}
 
         <View className="self-center items-center space-y-2 mb-3">
           <AntDesign name="checkcircleo" size={24} color="#048444" />
@@ -65,17 +107,32 @@ const RegisterScreen = ({ navigation }) => {
               setEmail={setEmail}
               password={password}
               setPassword={setPassword}
+              confirmPassword={confirmPassword}
+              setConfirmPassword={setConfirmPassword}
             />
           ) : page == 2 ? (
             <Step2 />
           ) : (
-            <Step3 />
+            <Step3
+              cardNumber={cardNumber}
+              setCardNumber={setCardNumber}
+              cardName={cardName}
+              setCardName={setCardName}
+              expiryDate={expiryDate}
+              setExpiryDate={setExpiryDate}
+            />
           )}
         </View>
 
         <TouchableOpacity
           onPress={() => {
-            if (page == 1 && name && email && password) {
+            if (
+              page == 1 &&
+              name &&
+              email &&
+              password &&
+              confirmPassword === password
+            ) {
               setPage(page + 1);
             } else if (page == 2) {
               setPage(page + 1);
