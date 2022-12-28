@@ -5,8 +5,8 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-  FlatList,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
@@ -27,15 +27,19 @@ const HomeScreen = () => {
   const [genres] = useState(Genres);
   const [books, setBooks] = useState([]);
   const [userEmail, setUserEmail] = useState("");
+  const [userName, setUserName] = useState();
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setUserEmail(user?.email);
+      setUserName(user?.displayName);
     });
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       let list = [];
       try {
@@ -47,6 +51,7 @@ const HomeScreen = () => {
       } catch (err) {
         console.log(err.message);
       }
+      setLoading(false);
     };
     fetchData();
   }, []);
@@ -88,7 +93,7 @@ const HomeScreen = () => {
         ) : (
           <>
             <Text className="text-gray-600 font-semibold text-2xl">
-              Olá, <Text className="text-[#F26E1D]">André Lima</Text>
+              Olá, <Text className="text-[#F26E1D]">{userName}</Text>!
             </Text>
             <Text className="text-gray-600 font-semibold">
               O que você quer ler hoje?
@@ -131,41 +136,47 @@ const HomeScreen = () => {
         ))}
       </ScrollView>
 
-      <ScrollView
-        style={{ marginTop: 16 }}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ backgroundColor: "#f5f5f5" }}
-      >
-        {books?.map((book) => (
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("BookDetail", {
-                title: book.title,
-                image: book.imageUrl,
-                author: book.author,
-                stars: book.stars,
-              });
-            }}
-            className="mr-8 w-32 h-66 bg-[#f5f5f5]"
-            key={book?.id}
-          >
-            <Image
-              source={{ uri: book?.imageUrl }}
-              className="h-48 w-36 rounded-lg"
-              resizeMode="cover"
-            />
+      {loading ? (
+        <View className="self-center mt-5">
+          <ActivityIndicator color="#F26E1D" size="large" />
+        </View>
+      ) : (
+        <ScrollView
+          style={{ marginTop: 16 }}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ backgroundColor: "#f5f5f5" }}
+        >
+          {books?.map((book) => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("BookDetail", {
+                  title: book.title,
+                  image: book.imageUrl,
+                  author: book.author,
+                  stars: book.stars,
+                });
+              }}
+              className="mr-8 w-32 h-66 bg-[#f5f5f5]"
+              key={book?.id}
+            >
+              <Image
+                source={{ uri: book?.imageUrl }}
+                className="h-48 w-36 rounded-lg"
+                resizeMode="cover"
+              />
 
-            <Text className="text-gray-600 font-semibold text-base">
-              {book?.title}
-            </Text>
+              <Text className="text-gray-600 font-semibold text-base">
+                {book?.title}
+              </Text>
 
-            <Text className="text-xs text-gray-400 font-medium">
-              {book?.author}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+              <Text className="text-xs text-gray-400 font-medium">
+                {book?.author}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
 
       <Text className="text-2xl mt-6 text-gray-600 font-semibold">
         Lançamentos

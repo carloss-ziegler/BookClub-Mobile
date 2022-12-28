@@ -15,12 +15,16 @@ const SplashScreen = ({ navigation }) => {
       if (user) {
         console.log(user.displayName);
         setTimeout(() => {
-          navigation.replace("Actions");
+          navigation.reset({
+            routes: [{ name: "Actions" }],
+          });
         }, 2000);
       } else {
         console.log("nenhum usuário");
         setTimeout(() => {
-          navigation.replace("InitialScreen");
+          navigation.reset({
+            routes: [{ name: "InitialScreen" }],
+          });
         }, 2000);
       }
     });

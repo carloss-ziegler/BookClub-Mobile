@@ -9,10 +9,12 @@ const ProfileScreen = ({ navigation }) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   const [userEmail, setUserEmail] = useState("");
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setUserEmail(user?.email);
+      setUserName(user?.displayName);
     });
   }, []);
 
@@ -20,7 +22,9 @@ const ProfileScreen = ({ navigation }) => {
     await signOut(auth)
       .then(() => {
         console.log("Saiu");
-        navigation.replace("InitialScreen");
+        navigation.reset({
+          routes: [{ name: "InitialScreen" }],
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -40,9 +44,9 @@ const ProfileScreen = ({ navigation }) => {
           />
           <View>
             <Text className="text-[#F26E1D] font-semibold text-xl">
-              André Lima
+              {userName}
             </Text>
-            <Text className="text-gray-500">andrelima@gmail.com</Text>
+            <Text className="text-gray-500">{userEmail}</Text>
           </View>
         </View>
         <View className="space-y-8 mt-10">

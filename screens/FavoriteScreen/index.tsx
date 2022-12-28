@@ -49,7 +49,7 @@ const FavoriteScreen = ({ navigation }) => {
         style={{ marginTop: 16 }}
         contentContainerStyle={{ marginTop: 20 }}
         keyExtractor={(item) => item.id}
-        renderItem={({ item: book }) => {
+        renderItem={({ item: book, index }) => {
           return (
             <View className="flex-row justify-between mr-1 mb-4 p-2 shadow bg-[#f5f5f5] rounded">
               <View className="flex-row space-x-3">
@@ -68,8 +68,12 @@ const FavoriteScreen = ({ navigation }) => {
               </View>
 
               <View className="self-center flex-row items-center space-x-2">
-                <TouchableOpacity onPress={() => setFavorited(!favorited)}>
-                  {favorited ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    setFavorited(index);
+                  }}
+                >
+                  {favorited == book.id ? (
                     <Ionicons name="heart" size={24} color="#AC0B13" />
                   ) : (
                     <Ionicons name="heart-outline" size={24} color="gray" />
@@ -81,14 +85,14 @@ const FavoriteScreen = ({ navigation }) => {
                     setLoading(true);
                     await new Promise((resolve) => setTimeout(resolve, 2500));
                     setLoading(false);
-                    setPressed(!pressed);
+                    setPressed(index);
                   }}
                 >
                   {loading ? (
                     <ActivityIndicator color="gray" />
                   ) : (
                     <>
-                      {pressed ? (
+                      {pressed == book.id ? (
                         <Ionicons
                           name="checkmark-circle"
                           size={24}
