@@ -94,7 +94,9 @@ const RegisterScreen = ({ navigation }) => {
               <>
                 {loading ? (
                   <View className="flex-row items-center space-x-1">
-                    <Text>Aguarde...</Text>
+                    <Text className="text-[#f5f5f5] font-semibold text-lg">
+                      Aguarde...
+                    </Text>
                     <ActivityIndicator color="#f5f5f5" />
                   </View>
                 ) : (

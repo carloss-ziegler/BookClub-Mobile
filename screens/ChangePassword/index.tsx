@@ -20,6 +20,8 @@ const ChangePassword = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const user = auth.currentUser;
+  const name = auth.currentUser?.displayName;
+  const email = auth.currentUser?.email;
 
   async function handleChangePassword() {
     setLoading(true);
@@ -64,10 +66,8 @@ const ChangePassword = ({ navigation }) => {
             resizeMode="cover"
           />
           <View>
-            <Text className="text-[#F26E1D] font-semibold text-xl">
-              André Lima
-            </Text>
-            <Text className="text-gray-500">andrelima@gmail.com</Text>
+            <Text className="text-[#F26E1D] font-semibold text-xl">{name}</Text>
+            <Text className="text-gray-500">{email}</Text>
           </View>
         </View>
 
