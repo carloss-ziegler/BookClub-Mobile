@@ -29,7 +29,9 @@ const LoginScreen = () => {
       await signInWithEmailAndPassword(auth, email, password)
         .then((userCredentials) => {
           console.log(userCredentials);
-          navigation.replace("Actions");
+          navigation.reset({
+            routes: [{ name: "Actions" }],
+          });
         })
         .catch((error) => {
           console.log(error);
@@ -100,14 +102,15 @@ const LoginScreen = () => {
           )}
         </TouchableOpacity>
 
-        <Text className="self-center mt-4">
-          Não possui uma conta?{" "}
-          <TouchableOpacity
-            onPress={() => navigation.navigation("RegisterScreen")}
-          >
+        <TouchableOpacity
+          onPress={() => navigation.navigate("RegisterScreen")}
+          className="self-center mt-4"
+        >
+          <Text>
+            Não possui uma conta?{" "}
             <Text className="text-[#F26E1D]">Registrar-se</Text>
-          </TouchableOpacity>
-        </Text>
+          </Text>
+        </TouchableOpacity>
 
         <TouchableOpacity className="mt-2">
           <Text className="self-center text-[#F26E1D]">

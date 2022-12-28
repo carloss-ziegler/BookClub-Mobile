@@ -8,15 +8,9 @@ import { auth } from "../../services/firebase";
 const ProfileScreen = ({ navigation }) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-  const [userEmail, setUserEmail] = useState("");
-  const [userName, setUserName] = useState("");
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      setUserEmail(user?.email);
-      setUserName(user?.displayName);
-    });
-  }, []);
+  const userEmail = auth.currentUser?.email;
+  const userName = auth.currentUser?.displayName;
 
   async function handleLogout() {
     await signOut(auth)
