@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { StatusBar } from "expo-status-bar";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import InitialScreen from "./screens/InitialScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import { TabNavigation } from "./routes/tabNavigation";
 import BookDetailScreen from "./screens/BookDetailScreen";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./services/firebase";
+import AboutUs from "./screens/AboutUs";
 import NewsScreen from "./screens/NewsScreen";
 import SelectedBook from "./screens/SelectedBook";
 import AudioPlayer from "./screens/AudioPlayer";
 import SplashScreen from "./screens/SplashScreen";
 import ChangePassword from "./screens/ChangePassword";
+import Privacy from "./screens/Privacy";
+import Terms from "./screens/Terms";
+import CardScreen from "./screens/CardScreen";
+import NewCard from "./screens/NewCard";
 
 const Stack = createStackNavigator();
 
@@ -64,6 +67,31 @@ export default function App() {
         <Stack.Screen
           component={SelectedBook}
           name="SelectedBook"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          component={AboutUs}
+          name="AboutUs"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          component={Privacy}
+          name="Privacy"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          component={Terms}
+          name="Terms"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          component={CardScreen}
+          name="CardScreen"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          component={NewCard}
+          name="NewCard"
           options={{ headerShown: false }}
         />
         <Stack.Screen

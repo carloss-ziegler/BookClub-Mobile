@@ -1,9 +1,13 @@
 // @ts-nocheck
 import { Text, TouchableOpacity, ScrollView } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { Ref, useRef } from "react";
 
-const Step2 = () => {
-  const [isSelected, setIsSelected] = useState();
+interface Step2Props {
+  isSelected: undefined | Ref;
+  setIsSelected: () => void;
+}
+
+const Step2 = ({ isSelected, setIsSelected }: Step2Props) => {
   const monthlyRef = useRef();
   const trimestralRef = useRef();
   const yearRef = useRef();
@@ -19,6 +23,8 @@ const Step2 = () => {
       }}
       showsVerticalScrollIndicator={false}
     >
+      <Text className="font-semibold text-lg mb-3">Selecione um plano</Text>
+
       <TouchableOpacity
         ref={monthlyRef}
         className={`${
@@ -36,7 +42,12 @@ const Step2 = () => {
           R$ <Text className="text-2xl">19,90</Text>
         </Text>
 
-        <TouchableOpacity className="bg-[#f5f5f5] py-2 items-center justify-center mt-10 rounded">
+        <TouchableOpacity
+          onPress={() => {
+            setIsSelected(monthlyRef);
+          }}
+          className="bg-[#f5f5f5] py-2 items-center justify-center mt-10 rounded"
+        >
           <Text className="text-red-500 font-semibold text-lg">
             Assine Agora
           </Text>
@@ -60,7 +71,12 @@ const Step2 = () => {
           R$ <Text className="text-2xl">53,90</Text>
         </Text>
 
-        <TouchableOpacity className="bg-[#f5f5f5] py-2 items-center justify-center mt-10 rounded">
+        <TouchableOpacity
+          onPress={() => {
+            setIsSelected(trimestralRef);
+          }}
+          className="bg-[#f5f5f5] py-2 items-center justify-center mt-10 rounded"
+        >
           <Text className="text-red-500 font-semibold text-lg">
             Assine Agora
           </Text>
@@ -84,7 +100,12 @@ const Step2 = () => {
           R$ <Text className="text-2xl">167,90</Text>
         </Text>
 
-        <TouchableOpacity className="bg-[#f5f5f5] py-2 items-center justify-center mt-10 rounded">
+        <TouchableOpacity
+          onPress={() => {
+            setIsSelected(yearRef);
+          }}
+          className="bg-[#f5f5f5] py-2 items-center justify-center mt-10 rounded"
+        >
           <Text className="text-red-500 font-semibold text-lg">
             Assine Agora
           </Text>

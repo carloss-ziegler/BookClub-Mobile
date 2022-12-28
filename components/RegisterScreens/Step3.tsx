@@ -34,7 +34,9 @@ const Step3 = ({
       showsVerticalScrollIndicator={false}
       className="mt-3"
     >
-      <Text className="text-lg font-semibold">Cadastrar Cartão</Text>
+      <Text className="text-lg font-semibold">
+        Cadastrar Método de Pagamento
+      </Text>
 
       <View className="w-full mt-4 border border-[#33333333] flex-row rounded items-center px-3 h-14 bg-white">
         <TextInput

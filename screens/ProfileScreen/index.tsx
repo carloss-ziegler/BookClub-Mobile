@@ -54,7 +54,10 @@ const ProfileScreen = ({ navigation }) => {
             <Entypo name="chevron-right" size={20} color="#444C4C" />
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex-row items-center justify-between">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("CardScreen")}
+            className="flex-row items-center justify-between"
+          >
             <Text className="text-gray-600 font-medium">
               Alterar forma de pagamento
             </Text>
@@ -89,17 +92,26 @@ const ProfileScreen = ({ navigation }) => {
         <View className="space-y-6">
           <Text className="text-gray-400">Mais</Text>
 
-          <TouchableOpacity className="flex-row items-center justify-between">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("AboutUs")}
+            className="flex-row items-center justify-between"
+          >
             <Text>Sobre nós</Text>
             <Entypo name="chevron-right" size={20} color="#444C4C" />
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex-row items-center justify-between">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Privacy")}
+            className="flex-row items-center justify-between"
+          >
             <Text>Política de privacidade</Text>
             <Entypo name="chevron-right" size={20} color="#444C4C" />
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex-row items-center justify-between">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Terms")}
+            className="flex-row items-center justify-between"
+          >
             <Text>Termos e condições</Text>
             <Entypo name="chevron-right" size={20} color="#444C4C" />
           </TouchableOpacity>

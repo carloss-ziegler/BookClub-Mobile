@@ -29,6 +29,8 @@ const RegisterScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [isSelected, setIsSelected] = useState();
+
   const [cardNumber, setCardNumber] = useState("");
   const [cardName, setCardName] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
@@ -65,6 +67,14 @@ const RegisterScreen = ({ navigation }) => {
                 borderRadius: 8,
               }}
             >
+              <Image
+                source={{
+                  uri: "https://logosmarcas.net/wp-content/uploads/2020/09/Mastercard-Logo.png",
+                }}
+                className="h-12 w-12 absolute right-3"
+                resizeMode="contain"
+              />
+
               <View className="absolute bottom-10 left-5">
                 <Text className="text-lg text-[#f5f5f5] font-semibold">
                   {cardNumber}
@@ -86,7 +96,7 @@ const RegisterScreen = ({ navigation }) => {
           <>
             <Image
               source={Logo}
-              className={`w-44 h-44 self-center ${
+              className={`w-44 h-44 -mr-3 self-center ${
                 Platform.OS === "android" ? "mt-7" : "mt-5"
               }`}
             />
@@ -111,7 +121,7 @@ const RegisterScreen = ({ navigation }) => {
               setConfirmPassword={setConfirmPassword}
             />
           ) : page == 2 ? (
-            <Step2 />
+            <Step2 isSelected={isSelected} setIsSelected={setIsSelected} />
           ) : (
             <Step3
               cardNumber={cardNumber}
@@ -134,9 +144,9 @@ const RegisterScreen = ({ navigation }) => {
               confirmPassword === password
             ) {
               setPage(page + 1);
-            } else if (page == 2) {
+            } else if (page == 2 && isSelected != undefined) {
               setPage(page + 1);
-            } else if (page == 3) {
+            } else if (page == 3 && cardNumber && cardName && expiryDate) {
               handleRegister();
             } else {
               alert("Preencha todos os campos!");

@@ -57,7 +57,7 @@ const HomeScreen = () => {
 
   return (
     <View className="bg-[#f5f5f5] px-4">
-      <View className="flex-row items-center justify-between mt-10">
+      <View className="flex-row items-center justify-between mt-7">
         <View className="mt-4 space-y-1">
           {userEmail === "admin@gmail.com" ? (
             <Text className="text-gray-600 font-semibold text-2xl">
@@ -123,7 +123,7 @@ const HomeScreen = () => {
         showsHorizontalScrollIndicator={false}
       >
         {genres.map((genre) => (
-          <TouchableOpacity key={genre.id} className="mr-3">
+          <TouchableOpacity key={genre.id} className="mr-3 px-2">
             <Text className="text-lg text-gray-500 font-medium">
               {genre.label}
             </Text>
@@ -131,13 +131,16 @@ const HomeScreen = () => {
         ))}
       </ScrollView>
 
+      <Text className="mt-3 mb-2 font-semibold text-gray-600 text-2xl">
+        Continuar lendo como {userName}
+      </Text>
       {loading ? (
         <View className="self-center mt-5">
           <ActivityIndicator color="#F26E1D" size="large" />
         </View>
       ) : (
         <ScrollView
-          style={{ marginTop: 16 }}
+          style={{ marginTop: 12 }}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ backgroundColor: "#f5f5f5" }}
