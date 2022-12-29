@@ -91,6 +91,7 @@ const Step3 = ({
           placeholder="Código de segurança (CVV)"
           className="flex-1"
           keyboardType="numeric"
+          maxLength={3}
         />
 
         <AntDesign name="checkcircleo" size={20} color="gray" />

@@ -53,7 +53,7 @@ const LoginScreen = () => {
         <Text className="font-semibold text-4xl">Login</Text>
 
         <View className="mt-2 py-4 space-y-4">
-          <View className="border border-[#cccccccc] bg-white rounded flex-row items-center justify-between py-3 px-2">
+          <View className="border border-[#cccccccc] bg-white rounded flex-row items-center justify-between h-14 px-3">
             <View className="flex-row items-center space-x-2">
               <AntDesign name="user" size={24} color="gray" />
 
@@ -61,17 +61,20 @@ const LoginScreen = () => {
                 value={email}
                 onChangeText={(text) => setEmail(text)}
                 placeholder="Email"
-                className="w-72"
+                className="flex-grow-1 max-w-xs"
                 keyboardType="email-address"
                 returnKeyType="next"
                 returnKeyLabel="Próximo"
+                autoFocus
               />
             </View>
 
-            <AntDesign name="closecircle" size={16} color="gray" />
+            <TouchableOpacity onPress={() => setEmail("")}>
+              <AntDesign name="closecircle" size={16} color="gray" />
+            </TouchableOpacity>
           </View>
 
-          <View className="border border-[#cccccccc] bg-white rounded flex-row items-center justify-between px-2 py-3">
+          <View className="border border-[#cccccccc] bg-white rounded flex-row items-center justify-between h-14 px-3">
             <View className="flex-row items-center space-x-2">
               <FontAwesome5 name="lock" size={24} color="gray" />
 
@@ -79,7 +82,7 @@ const LoginScreen = () => {
                 value={password}
                 onChangeText={(text) => setPassword(text)}
                 placeholder="Senha"
-                className="w-72"
+                className="flex-grow-1 max-w-xs"
                 secureTextEntry
                 returnKeyType="send"
                 returnKeyLabel="Enviar"

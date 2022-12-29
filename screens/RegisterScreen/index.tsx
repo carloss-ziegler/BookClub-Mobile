@@ -54,12 +54,16 @@ const RegisterScreen = ({ navigation }) => {
     setLoading(false);
   }
 
-  async function handleAddCard() {
-    await addDoc(collection(db, "cards"), {
-      cardName: cardName,
-      cardNumber: cardNumber,
-      cvv: cvv,
-      expiryDate: expiryDate,
+  async function handleAddCardToUser() {
+    await addDoc(collection(db, "user"), {
+      name: name,
+      email: email,
+      cards: {
+        cardName: cardName,
+        cardNumber: cardNumber,
+        cvv: cvv,
+        expiryDate: expiryDate,
+      },
     })
       .then(() => {
         console.log("sucesso");
@@ -70,7 +74,7 @@ const RegisterScreen = ({ navigation }) => {
   }
 
   function finishRegister() {
-    Promise.all([handleRegister(), handleAddCard()]).then(
+    Promise.all([handleRegister(), handleAddCardToUser()]).then(
       ([registerResponse, cardResponse]) => {
         setLoading(false);
       }

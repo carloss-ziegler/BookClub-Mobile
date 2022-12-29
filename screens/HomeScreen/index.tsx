@@ -97,13 +97,10 @@ const HomeScreen = () => {
         </View>
       </View>
 
-      <View className="flex-row items-center justify-between border border-[#cccccccc] bg-white p-3 rounded mt-4">
-        <View className="flex-row items-center space-x-2">
+      <View className="flex-row items-center w-full justify-between border border-[#cccccccc] bg-white p-3 rounded mt-4">
+        <View className="flex-row items-center space-x-2 flex-1">
           <Octicons name="search" size={20} color="gray" />
-          <TextInput
-            placeholder="Buscar por autor, título, gênero..."
-            className="w-64"
-          />
+          <TextInput placeholder="Buscar por autor, título, gênero..." />
         </View>
 
         <View className="flex-row items-center space-x-2">

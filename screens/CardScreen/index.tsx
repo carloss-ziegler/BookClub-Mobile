@@ -12,7 +12,8 @@ import React, { useEffect, useState } from "react";
 import { Entypo } from "@expo/vector-icons";
 import { auth, db } from "../../services/firebase";
 import Card from "../../assets/images/card.png";
-import { collection, getDocs } from "firebase/firestore";
+import Empty from "../../assets/images/emptyState.png";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 interface CardProps {
   id: string;
@@ -34,7 +35,9 @@ const CardScreen = ({ navigation }) => {
 
       setLoading(true);
       try {
-        const querySnapshot = await getDocs(collection(db, "cards"));
+        const q = query(collection(db, "user"), where("email", "==", email));
+
+        const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
           list.push({ id: doc.id, ...doc.data() });
         });
@@ -101,61 +104,80 @@ const CardScreen = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
           pagingEnabled
           snapToAlignment="center"
+          contentContainerStyle={{
+            flex: 1,
+          }}
         >
-          {cardData?.map((item, index) => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("CardDetails", {
-                  id: item?.id,
-                  cardNumber: item?.cardNumber,
-                  cardName: item?.cardName,
-                  expiryDate: item?.expiryDate,
-                  cvv: item?.cvv,
-                });
-              }}
-              key={item?.id}
-            >
-              <ImageBackground
-                source={Card}
-                className={`w-full h-44 ${index > 0 && "mt-3"}`}
-                imageStyle={{
-                  borderRadius: 8,
-                }}
-              >
-                <View className="absolute top-4 left-4">
-                  <Text className="text-[#f5f5f5] font-semibold">
-                    **{item?.cvv.charAt(item?.cvv.length - 1)}
-                  </Text>
-                </View>
+          {cardData.length < 1 ? (
+            <View className="flex-1 items-center justify-center">
+              <Image source={Empty} className="h-72 w-72" />
 
-                <Image
-                  source={{
-                    uri: "https://logosmarcas.net/wp-content/uploads/2020/09/Mastercard-Logo.png",
+              <Text className="text-center font-semibold mt-3 text-lg">
+                Sem Cartões Ainda!
+              </Text>
+
+              <Text className="text-center font-medium text-gray-400">
+                Adicione um novo cartão e ele estará disponível aqui.
+              </Text>
+            </View>
+          ) : (
+            <>
+              {cardData?.map((item, index) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("CardDetails", {
+                      id: item?.id,
+                      cardNumber: item?.cardNumber,
+                      cardName: item?.cardName,
+                      expiryDate: item?.expiryDate,
+                      cvv: item?.cvv,
+                    });
                   }}
-                  className="h-12 w-12 absolute right-3"
-                  resizeMode="contain"
-                />
+                  key={item?.id}
+                >
+                  <ImageBackground
+                    source={Card}
+                    className={`w-full h-44 ${index > 0 && "mt-3"}`}
+                    imageStyle={{
+                      borderRadius: 8,
+                    }}
+                  >
+                    <View className="absolute top-4 left-4">
+                      <Text className="text-[#f5f5f5] font-semibold">
+                        **{item?.cards?.cvv.charAt(item?.cards?.cvv.length - 1)}
+                      </Text>
+                    </View>
 
-                <View className="absolute bottom-10 left-5">
-                  <Text className="text-lg text-[#f5f5f5] font-semibold">
-                    {item?.cardNumber}
-                  </Text>
-                </View>
+                    <Image
+                      source={{
+                        uri: "https://logosmarcas.net/wp-content/uploads/2020/09/Mastercard-Logo.png",
+                      }}
+                      className="h-12 w-12 absolute right-3"
+                      resizeMode="contain"
+                    />
 
-                <View className="absolute bottom-5 right-5">
-                  <Text className="text-[#f5f5f5] font-semibold">
-                    {item?.expiryDate}
-                  </Text>
-                </View>
+                    <View className="absolute bottom-10 left-5">
+                      <Text className="text-lg text-[#f5f5f5] font-semibold">
+                        {item?.cards?.cardNumber}
+                      </Text>
+                    </View>
 
-                <View className="absolute bottom-5 left-5">
-                  <Text className="text-[#f5f5f5] font-semibold">
-                    {item?.cardName}
-                  </Text>
-                </View>
-              </ImageBackground>
-            </TouchableOpacity>
-          ))}
+                    <View className="absolute bottom-5 right-5">
+                      <Text className="text-[#f5f5f5] font-semibold">
+                        {item?.cards?.expiryDate}
+                      </Text>
+                    </View>
+
+                    <View className="absolute bottom-5 left-5">
+                      <Text className="text-[#f5f5f5] font-semibold">
+                        {item?.cards?.cardName}
+                      </Text>
+                    </View>
+                  </ImageBackground>
+                </TouchableOpacity>
+              ))}
+            </>
+          )}
         </ScrollView>
       )}
     </View>

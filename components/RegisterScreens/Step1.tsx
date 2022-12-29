@@ -42,6 +42,7 @@ const Step1 = ({
           onChangeText={(value) => setName(value)}
           placeholder="Nome completo"
           className="flex-1"
+          autoFocus
         />
 
         <AntDesign name="closecircleo" size={18} color="#9C9C9C" />

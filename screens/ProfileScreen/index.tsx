@@ -12,19 +12,6 @@ const ProfileScreen = ({ navigation }) => {
   const userEmail = auth.currentUser?.email;
   const userName = auth.currentUser?.displayName;
 
-  async function handleLogout() {
-    await signOut(auth)
-      .then(() => {
-        console.log("Saiu");
-        navigation.reset({
-          routes: [{ name: "InitialScreen" }],
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
   return (
     <View className="flex-1 bg-[#f5f5f5] px-4 py-6 justify-between mt-4">
       <View className="flex-1 justify-start">
@@ -116,8 +103,12 @@ const ProfileScreen = ({ navigation }) => {
             <Entypo name="chevron-right" size={20} color="#444C4C" />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={handleLogout}>
-            <Text className="text-red-600 text-lg">Sair</Text>
+          <TouchableOpacity
+            className="flex-row items-center justify-between"
+            onPress={() => navigation.navigate("ProfileOptions")}
+          >
+            <Text>Configurações de Conta</Text>
+            <Entypo name="chevron-right" size={20} color="#444C4C" />
           </TouchableOpacity>
         </View>
       </View>
