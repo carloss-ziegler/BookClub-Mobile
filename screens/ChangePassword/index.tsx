@@ -65,7 +65,7 @@ const ChangePassword = ({ navigation }) => {
             className="w-14 h-14 rounded-lg"
             resizeMode="cover"
           />
-          <View>
+          <View className="max-w-[250px]">
             <Text className="text-[#F26E1D] font-semibold text-xl">{name}</Text>
             <Text className="text-gray-500">{email}</Text>
           </View>

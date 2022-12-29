@@ -14,7 +14,7 @@ import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 import Card from "../../assets/images/card.png";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { addDoc, collection } from "firebase/firestore";
-import { db } from "../../services/firebase";
+import { auth, db } from "../../services/firebase";
 
 const NewCard = ({ navigation }) => {
   const [cardNumber, setCardNumber] = useState("");
@@ -23,11 +23,12 @@ const NewCard = ({ navigation }) => {
   const [cvv, setCvv] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const email = auth.currentUser?.email;
 
-  async function updateCard() {
+  async function addCard() {
     if (cardName && cardNumber && expiryDate && cvv) {
       setLoading(true);
-      await addDoc(collection(db, "cards"), {
+      await addDoc(collection(db, "user", email, "cards"), {
         cardName: cardName,
         cardNumber: cardNumber,
         cvv: cvv,
@@ -47,10 +48,7 @@ const NewCard = ({ navigation }) => {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior="height"
-      className="h-screen bg-[#f5f5f5] px-4 py-6"
-    >
+    <KeyboardAvoidingView className="h-screen bg-[#f5f5f5] px-4 py-6">
       <View className="items-center flex-row justify-between mt-3">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -160,7 +158,7 @@ const NewCard = ({ navigation }) => {
 
       <TouchableOpacity
         disabled={loading}
-        onPress={updateCard}
+        onPress={addCard}
         className="p-3 flex-row items-center justify-center mx-3 mb-3 bg-[#F26E1D] absolute bottom-0 right-0 left-0 rounded"
       >
         {loading ? (

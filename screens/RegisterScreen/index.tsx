@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Platform,
   ImageBackground,
+  Alert,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
@@ -55,27 +56,17 @@ const RegisterScreen = ({ navigation }) => {
   }
 
   async function handleAddCardToUser() {
-    await addDoc(collection(db, "user"), {
-      name: name,
-      email: email,
-      cards: {
-        cardName: cardName,
-        cardNumber: cardNumber,
-        cvv: cvv,
-        expiryDate: expiryDate,
-      },
-    })
-      .then(() => {
-        console.log("sucesso");
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
+    await addDoc(collection(db, "user", email, "cards"), {
+      cardName: cardName,
+      cardNumber: cardNumber,
+      expiryDate: expiryDate,
+      cvv: cvv,
+    });
   }
 
   function finishRegister() {
     Promise.all([handleRegister(), handleAddCardToUser()]).then(
-      ([registerResponse, cardResponse]) => {
+      ([registerResponse, userResponse, cardResponse]) => {
         setLoading(false);
       }
     );
@@ -165,53 +156,62 @@ const RegisterScreen = ({ navigation }) => {
           )}
         </View>
 
-        <TouchableOpacity
-          onPress={() => {
-            if (
-              page == 1 &&
-              name &&
-              email &&
-              password &&
-              confirmPassword === password
-            ) {
-              setPage(page + 1);
-            } else if (page == 2 && isSelected != undefined) {
-              setPage(page + 1);
-            } else if (
-              page == 3 &&
-              cardNumber &&
-              cardName &&
-              expiryDate &&
-              cvv
-            ) {
-              finishRegister();
-            } else {
-              alert("Preencha todos os campos!");
-            }
-          }}
-          className="p-3 items-center justify-center mx-3 mb-3 bg-[#F26E1D] absolute bottom-0 right-0 left-0 rounded"
-        >
-          <Text className="text-[#f5f5f5] font-semibold text-lg">
-            {page == 1 && <Text>Próximo</Text>}
-            {page == 2 && <Text>Próximo</Text>}
-            {page == 3 && (
-              <>
-                {loading ? (
-                  <View className="flex-row items-center space-x-1">
-                    <Text className="text-[#f5f5f5] font-semibold text-lg">
-                      Aguarde...
-                    </Text>
-                    <ActivityIndicator color="#f5f5f5" />
-                  </View>
-                ) : (
-                  <>
-                    <Text>Finalizar Cadastro</Text>
-                  </>
-                )}
-              </>
-            )}
-          </Text>
-        </TouchableOpacity>
+        <View className="mx-3 mb-3 absolute bottom-0 right-0 left-0 flex-row items-center">
+          {loading ? (
+            <TouchableOpacity className="flex-1 bg-[#F26E1D] rounded flex-row items-center justify-center p-3 space-x-2">
+              <Text className="text-[#f5f5f5] text-lg font-semibold">
+                Processando...
+              </Text>
+              <ActivityIndicator color="#f5f5f5" />
+            </TouchableOpacity>
+          ) : (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  if (
+                    page == 1 &&
+                    name &&
+                    email &&
+                    password &&
+                    confirmPassword === password
+                  ) {
+                    setPage(page + 1);
+                  } else if (page == 2 && isSelected != undefined) {
+                    setPage(page + 1);
+                  } else if (
+                    page == 3 &&
+                    cardNumber &&
+                    cardName &&
+                    expiryDate &&
+                    cvv
+                  ) {
+                    finishRegister();
+                  } else {
+                    alert("Preencha todos os campos!");
+                  }
+                }}
+                className="p-3 items-center flex-1 justify-center bg-[#F26E1D] rounded"
+              >
+                <Text className="text-[#f5f5f5] font-semibold text-lg">
+                  {page == 1 && <Text>Próximo</Text>}
+                  {page == 2 && <Text>Próximo</Text>}
+                  {page == 3 && <Text>Finalizar Cadastro</Text>}
+                </Text>
+              </TouchableOpacity>
+
+              {page == 3 && (
+                <TouchableOpacity
+                  onPress={handleRegister}
+                  className="flex-1 items-center justify-center"
+                >
+                  <Text className="text-[#F26E1D] font-semibold text-base">
+                    Talvez mais tarde
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </>
+          )}
+        </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );

@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
-  MaterialIcons,
   MaterialCommunityIcons,
   Octicons,
   SimpleLineIcons,
@@ -37,6 +36,8 @@ const HomeScreen = () => {
     });
   }, []);
 
+  const firstName = userName?.split(" ").slice(0, 1).join(" ");
+
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
@@ -58,7 +59,7 @@ const HomeScreen = () => {
   return (
     <View className="bg-[#f5f5f5] px-4">
       <View className="flex-row items-center justify-between mt-7">
-        <View className="mt-4 space-y-1">
+        <View className="mt-4 space-y-1 max-w-[200px]">
           {userEmail === "admin@gmail.com" ? (
             <Text className="text-gray-600 font-semibold text-2xl">
               Bem vindo, <Text className="text-[#F26E1D]">Administrador</Text>!
@@ -66,7 +67,7 @@ const HomeScreen = () => {
           ) : (
             <>
               <Text className="text-gray-600 font-semibold text-2xl">
-                Olá, <Text className="text-[#F26E1D]">{userName}</Text>!
+                Olá, <Text className="text-[#F26E1D]">{firstName}</Text>!
               </Text>
               <Text className="text-gray-600 font-semibold">
                 O que você quer ler hoje?
@@ -129,7 +130,7 @@ const HomeScreen = () => {
       </ScrollView>
 
       <Text className="mt-3 mb-2 font-semibold text-gray-600 text-2xl">
-        Continuar lendo como {userName}
+        Continuar lendo como {firstName}
       </Text>
       {loading ? (
         <View className="self-center mt-5">

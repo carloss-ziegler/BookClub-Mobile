@@ -15,7 +15,7 @@ import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 import Card from "../../assets/images/card.png";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { db } from "../../services/firebase";
+import { auth, db } from "../../services/firebase";
 
 const CardDetails = ({ navigation, route }) => {
   const [newCardName, setNewCardName] = useState<string>("");
@@ -23,15 +23,17 @@ const CardDetails = ({ navigation, route }) => {
   const [newExpiryDate, setNewExpiryDate] = useState<string>("");
   const [newCvv, setNewCvv] = useState<string>("");
 
+  const email = auth.currentUser?.email;
+
   const [loading, setLoading] = useState<boolean>(false);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
   const { id, cardNumber, cardName, expiryDate, cvv } = route.params;
   if (!cardNumber && !cardName && !expiryDate && !cvv) {
-    return null;
+    throw new Error("Sem Dados");
   }
 
-  const cardRef = doc(db, "cards", id);
+  const cardRef = doc(db, "user", email, "cards", id);
 
   async function deleteCard() {
     setDeleteLoading(true);

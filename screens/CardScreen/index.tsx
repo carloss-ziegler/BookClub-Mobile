@@ -29,13 +29,15 @@ const CardScreen = ({ navigation }) => {
   const [cardData, setCardData] = useState<CardProps[]>([]);
   const [loading, setLoading] = useState(false);
 
+  console.log(cardData);
+
   useEffect(() => {
     const res = async () => {
       let list = [];
 
       setLoading(true);
       try {
-        const q = query(collection(db, "user"), where("email", "==", email));
+        const q = query(collection(db, "user", email, "cards"));
 
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
@@ -76,7 +78,7 @@ const CardScreen = ({ navigation }) => {
           className="w-14 h-14 rounded-lg"
           resizeMode="cover"
         />
-        <View>
+        <View className="max-w-[250px]">
           <Text className="text-[#F26E1D] font-semibold text-xl">{name}</Text>
           <Text className="text-gray-500">{email}</Text>
         </View>
@@ -144,7 +146,7 @@ const CardScreen = ({ navigation }) => {
                   >
                     <View className="absolute top-4 left-4">
                       <Text className="text-[#f5f5f5] font-semibold">
-                        **{item?.cards?.cvv.charAt(item?.cards?.cvv.length - 1)}
+                        **{item?.cvv.charAt(item?.cvv.length - 1)}
                       </Text>
                     </View>
 
@@ -158,19 +160,19 @@ const CardScreen = ({ navigation }) => {
 
                     <View className="absolute bottom-10 left-5">
                       <Text className="text-lg text-[#f5f5f5] font-semibold">
-                        {item?.cards?.cardNumber}
+                        {item?.cardNumber}
                       </Text>
                     </View>
 
                     <View className="absolute bottom-5 right-5">
                       <Text className="text-[#f5f5f5] font-semibold">
-                        {item?.cards?.expiryDate}
+                        {item?.expiryDate}
                       </Text>
                     </View>
 
                     <View className="absolute bottom-5 left-5">
                       <Text className="text-[#f5f5f5] font-semibold">
-                        {item?.cards?.cardName}
+                        {item?.cardName}
                       </Text>
                     </View>
                   </ImageBackground>
