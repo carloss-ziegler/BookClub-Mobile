@@ -8,12 +8,11 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Entypo } from "@expo/vector-icons";
-import { auth, db } from "../../services/firebase";
 import Card from "../../assets/images/card.png";
 import Empty from "../../assets/images/emptyState.png";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { UserContext } from "../../contexts/userContext";
 
 interface CardProps {
   id: string;
@@ -24,33 +23,9 @@ interface CardProps {
 }
 
 const CardScreen = ({ navigation }) => {
-  const name = auth.currentUser?.displayName;
-  const email = auth.currentUser?.email;
+  const { state: user } = useContext(UserContext);
   const [cardData, setCardData] = useState<CardProps[]>([]);
   const [loading, setLoading] = useState(false);
-
-  console.log(cardData);
-
-  useEffect(() => {
-    const res = async () => {
-      let list = [];
-
-      setLoading(true);
-      try {
-        const q = query(collection(db, "user", email, "cards"));
-
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
-        });
-        setCardData(list);
-      } catch (err) {
-        console.log(err.message);
-      }
-      setLoading(false);
-    };
-    res();
-  }, []);
 
   return (
     <View className="flex-1 bg-[#f5f5f5] px-4 py-6 mt-4">
@@ -79,8 +54,9 @@ const CardScreen = ({ navigation }) => {
           resizeMode="cover"
         />
         <View className="max-w-[250px]">
-          <Text className="text-[#F26E1D] font-semibold text-xl">{name}</Text>
-          <Text className="text-gray-500">{email}</Text>
+          <Text className="text-[#F26E1D] font-semibold text-xl">
+            {user.name}
+          </Text>
         </View>
       </View>
 

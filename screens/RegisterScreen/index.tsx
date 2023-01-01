@@ -23,61 +23,78 @@ import Step3 from "../../components/RegisterScreens/Step3";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../../services/firebase";
 import { addDoc, collection } from "firebase/firestore";
+import axios from "axios";
 
 const RegisterScreen = ({ navigation }) => {
   const [page, setPage] = useState(1);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   const [isSelected, setIsSelected] = useState();
 
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardName, setCardName] = useState("");
-  const [expiryDate, setExpiryDate] = useState("");
-  const [cvv, setCvv] = useState("");
+  const [cardNumber, setCardNumber] = useState<string>("");
+  const [cardName, setCardName] = useState<string>("");
+  const [expiryDate, setExpiryDate] = useState<string>("");
+  const [cvv, setCvv] = useState<string>("");
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  async function handleRegister() {
-    setLoading(true);
-    await createUserWithEmailAndPassword(auth, email, password).then(
-      async (userCredentials) => {
-        await updateProfile(auth.currentUser, {
-          displayName: name,
+  async function handleApiRegister() {
+    try {
+      setLoading(true);
+      await axios
+        .post("http://192.168.0.18:3001/auth/register", {
+          username: name,
+          email: email,
+          password: password,
+          name: name,
+        })
+        .then(() => {
+          navigation.navigate("LoginScreen");
         });
-        navigation.reset({
-          routes: [{ name: "Actions" }],
-        });
-      }
-    );
-    setLoading(false);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async function handleAddCardToUser() {
-    await addDoc(collection(db, "user", email, "cards"), {
-      cardName: cardName,
-      cardNumber: cardNumber,
-      expiryDate: expiryDate,
-      cvv: cvv,
-    });
-  }
+  // async function handleRegister() {
+  //   setLoading(true);
+  //   await createUserWithEmailAndPassword(auth, email, password).then(
+  //     async (userCredentials) => {
+  //       await updateProfile(auth.currentUser, {
+  //         displayName: name,
+  //       });
+  //       navigation.reset({
+  //         routes: [{ name: "Actions" }],
+  //       });
+  //     }
+  //   );
+  //   setLoading(false);
+  // }
 
-  function finishRegister() {
-    Promise.all([handleRegister(), handleAddCardToUser()]).then(
-      ([registerResponse, userResponse, cardResponse]) => {
-        setLoading(false);
-      }
-    );
-  }
+  // async function handleAddCardToUser() {
+  //   await addDoc(collection(db, "user", email, "cards"), {
+  //     cardName: cardName,
+  //     cardNumber: cardNumber,
+  //     expiryDate: expiryDate,
+  //     cvv: cvv,
+  //   });
+  // }
+
+  // function finishRegister() {
+  //   Promise.all([handleRegister(), handleAddCardToUser()]).then(
+  //     ([registerResponse, userResponse, cardResponse]) => {
+  //       setLoading(false);
+  //     }
+  //   );
+  // }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView
-        behavior="height"
-        className="h-screen px-3 bg[#f5f5f5]"
-      >
+      <KeyboardAvoidingView className="h-screen px-3 bg[#f5f5f5]">
         {page == 3 ? (
           <>
             <ImageBackground
@@ -185,7 +202,7 @@ const RegisterScreen = ({ navigation }) => {
                     expiryDate &&
                     cvv
                   ) {
-                    finishRegister();
+                    // finishRegister();
                   } else {
                     alert("Preencha todos os campos!");
                   }
@@ -201,7 +218,7 @@ const RegisterScreen = ({ navigation }) => {
 
               {page == 3 && (
                 <TouchableOpacity
-                  onPress={handleRegister}
+                  onPress={handleApiRegister}
                   className="flex-1 items-center justify-center"
                 >
                   <Text className="text-[#F26E1D] font-semibold text-base">

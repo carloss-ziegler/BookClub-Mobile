@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { View, Text, Image, ScrollView, ActivityIndicator } from "react-native";
 import React, { useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -9,7 +9,7 @@ const BookDetailScreen = ({ navigation }) => {
   const [wantToRead, setWantToRead] = useState(false);
 
   const {
-    params: { title, image, author, stars },
+    params: { title, image, author, stars, description, author_desc },
   } = useRoute();
 
   return (
@@ -48,7 +48,7 @@ const BookDetailScreen = ({ navigation }) => {
           <Ionicons name="star" size={18} color="#FFCE31" />
           <Ionicons name="star" size={18} color="#FFCE31" />
           <Ionicons name="star" size={18} color="#FFCE31" />
-          <Text className="ml-1 text-gray-400">{stars}</Text>
+          <Text className="ml-1 text-gray-400">{stars.toFixed(1)}</Text>
         </View>
 
         <TouchableOpacity
@@ -77,24 +77,12 @@ const BookDetailScreen = ({ navigation }) => {
 
       <View className="mt-2 space-y-2">
         <Text className="text-2xl font-semibold">Sobre o autor</Text>
-        <Text className="text-sm text-gray-400">
-          {"    "}
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum
-          accusamus culpa commodi praesentium temporibus aspernatur blanditiis
-          velit nulla quae ipsam? At laudantium, quibusdam corrupti temporibus
-          et quaerat voluptas numquam excepturi?
-        </Text>
+        <Text className="text-sm text-gray-400">{author_desc}</Text>
       </View>
 
       <View className="mt-5 space-y-2">
         <Text className="text-2xl font-semibold">Visão Geral</Text>
-        <Text className="text-sm text-gray-400">
-          {"    "}
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum
-          accusamus culpa commodi praesentium temporibus aspernatur blanditiis
-          velit nulla quae ipsam? At laudantium, quibusdam corrupti temporibus
-          et quaerat voluptas numquam excepturi?
-        </Text>
+        <Text className="text-sm text-gray-400">{description}</Text>
       </View>
     </ScrollView>
   );

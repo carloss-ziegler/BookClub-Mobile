@@ -2,15 +2,21 @@
 import { View, Text, Image, TouchableOpacity, Switch } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Entypo, AntDesign } from "@expo/vector-icons";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../../services/firebase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserProps } from "../../utils/types";
 
 const ProfileScreen = ({ navigation }) => {
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [isEnabled, setIsEnabled] = useState<boolean>(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+  const [currentUser, setCurrentUser] = useState<UserProps[]>([]);
 
-  const userEmail = auth.currentUser?.email;
-  const userName = auth.currentUser?.displayName;
+  useEffect(() => {
+    const getUser = async () => {
+      const res = await AsyncStorage.getItem("user");
+      setCurrentUser(JSON.parse(res));
+    };
+    getUser();
+  }, []);
 
   return (
     <View className="flex-1 bg-[#f5f5f5] px-4 py-6 justify-between mt-4">
@@ -25,9 +31,8 @@ const ProfileScreen = ({ navigation }) => {
           />
           <View className="max-w-[250px]">
             <Text className="text-[#F26E1D] font-semibold text-xl">
-              {userName}
+              {currentUser.name}
             </Text>
-            <Text className="text-gray-500">{userEmail}</Text>
           </View>
         </View>
         <View className="space-y-8 mt-10">
@@ -51,7 +56,7 @@ const ProfileScreen = ({ navigation }) => {
             <AntDesign name="plus" size={20} color="#444C4C" />
           </TouchableOpacity>
 
-          {userEmail === "admin@gmail.com" && (
+          {currentUser.email === "admin@gmail.com" && (
             <TouchableOpacity className="flex-row items-center justify-between">
               <Text className="text-gray-600 font-medium">
                 Cadastrar produtos
@@ -105,7 +110,15 @@ const ProfileScreen = ({ navigation }) => {
 
           <TouchableOpacity
             className="flex-row items-center justify-between"
-            onPress={() => navigation.navigate("ProfileOptions")}
+            onPress={() =>
+              navigation.navigate("ProfileOptions", {
+                id: currentUser.id,
+                username: currentUser.username,
+                email: currentUser.email,
+                country: currentUser.country,
+                profilePic: currentUser.profilePic,
+              })
+            }
           >
             <Text>Configurações de Conta</Text>
             <Entypo name="chevron-right" size={20} color="#444C4C" />

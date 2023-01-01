@@ -9,39 +9,42 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Entypo } from "@expo/vector-icons";
-import { auth } from "../../services/firebase";
-import { deleteUser, signOut, updateCurrentUser } from "firebase/auth";
+import { api } from "../../utils/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const ProfileOptions = ({ navigation }) => {
-  const name = auth.currentUser?.displayName;
-  const email = auth.currentUser?.email;
+const ProfileOptions = ({ navigation, route }) => {
+  const { id, username, email, country, profilePic } = route.params;
+  const [newValues, setNewValues] = useState({
+    name: "",
+    email: "",
+    country: "",
+  });
 
-  const [newName, setNewName] = useState("");
-  const [newEmail, setNewEmail] = useState("");
+  async function logout() {
+    try {
+      await api.post("/auth/logout");
 
-  async function handleLogout() {
-    await signOut(auth)
-      .then(() => {
-        console.log("Saiu");
-        navigation.reset({
-          routes: [{ name: "InitialScreen" }],
-        });
-      })
-      .catch((error) => {
-        console.log(error);
+      await AsyncStorage.removeItem("user");
+
+      navigation.reset({
+        routes: [{ name: "InitialScreen" }],
       });
+    } catch (error) {
+      alert(error);
+    }
   }
 
-  async function deleteAccount() {
-    await deleteUser(auth.currentUser)
-      .then(() => {
-        console.log("sucesso");
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
+  async function updateUser() {
+    try {
+      const res = await api.put(`/users/${id}`, newValues);
+      console.log(res);
+
+      await AsyncStorage.setItem("users", JSON.stringify(newValues));
+    } catch (error) {
+      alert(error);
+    }
   }
 
   return (
@@ -69,49 +72,74 @@ const ProfileOptions = ({ navigation }) => {
         <View className="self-center items-center">
           <Image
             source={{
-              uri: "https://backoffice.freedomhint.com/uploads/images/profile_picture/mail_pro.png",
+              uri: profilePic
+                ? profilePic
+                : "https://backoffice.freedomhint.com/uploads/images/profile_picture/mail_pro.png",
             }}
             className="w-28 h-28 mt-10"
           />
-
-          <Text className="text-center mt-2 font-semibold text-[#F26E1D] text-lg">
-            {name}
-          </Text>
-          <Text className="text-center font-medium text-sm text-gray-400">
-            {email}
-          </Text>
         </View>
 
         <View className="bg-white shadow self-center rounded-lg p-5 w-full mt-7">
           <View className="h-12 border border-[#33333333] rounded items-center flex-row px-2">
             <TextInput
-              value={newName}
-              onChangeText={(value) => setNewName(value)}
-              placeholder="Nome de usuário"
+              value={newValues.name}
+              onChangeText={(value) =>
+                setNewValues((prevState) => ({ ...prevState, name: value }))
+              }
+              placeholder={username != "" ? username : "Nome de usuário"}
               className="flex-1"
+              placeholderTextColor={username != "" ? "#4C4C54" : "#ACACAC"}
             />
           </View>
 
           <View className="h-12 border border-[#33333333] rounded items-center flex-row px-2 mt-3">
             <TextInput
-              value={newEmail}
-              onChangeText={(value) => setNewEmail(value)}
-              placeholder="Email"
+              value={newValues.email}
+              onChangeText={(value) =>
+                setNewValues((prevState) => ({ ...prevState, email: value }))
+              }
+              placeholder={email != "" ? email : "Email"}
               className="flex-1"
+              placeholderTextColor={email != "" ? "#4C4C54" : "#ACACAC"}
+            />
+          </View>
+
+          <View className="h-12 border border-[#33333333] rounded items-center flex-row px-2 mt-3">
+            <TextInput
+              // value={newValues.name}
+              // onChangeText={(value) =>
+              //   setNewValues((prevState) => ({ ...prevState, name: value }))
+              // }
+              className="flex-1"
+              // placeholder={user.phone != "" ? user.phone : "Número de telefone"}
+              // placeholderTextColor={user.phone != "" ? "#4C4C54" : "#ACACAC"}
+            />
+          </View>
+
+          <View className="h-12 border border-[#33333333] rounded items-center flex-row px-2 mt-3">
+            <TextInput
+              value={newValues.country}
+              onChangeText={(value) =>
+                setNewValues((prevState) => ({ ...prevState, country: value }))
+              }
+              placeholder={country != "" ? country : "País"}
+              className="flex-1"
+              placeholderTextColor={country != "" ? "#4C4C54" : "#ACACAC"}
             />
           </View>
 
           <View className="flex-row items-center mt-6">
-            <TouchableOpacity className="flex-1 items-center justify-center bg-[#F26E1D] rounded">
+            <TouchableOpacity
+              onPress={updateUser}
+              className="flex-1 items-center justify-center bg-[#F26E1D] rounded"
+            >
               <Text className="text-white font-semibold py-3">
                 Confirmar Alterações
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={deleteAccount}
-              className="flex-1 items-center justify-center bg-transparent"
-            >
+            <TouchableOpacity className="flex-1 items-center justify-center bg-transparent">
               <Text className="text-[#F26E1D] font-semibold">
                 Excluir Conta
               </Text>
@@ -120,13 +148,15 @@ const ProfileOptions = ({ navigation }) => {
         </View>
 
         <TouchableOpacity
-          onPress={handleLogout}
+          onPress={logout}
           className="absolute bottom-10 right-0 left-0 items-center justify-center"
         >
-          <Text className="text-red-500 font-semibold text-lg">
-            Sair de {email}
-          </Text>
+          <Text className="text-gray-500 font-semibold text-lg">Sair</Text>
         </TouchableOpacity>
+
+        <Text className="absolute bottom-5 right-0 left-0 text-center font-medium text-sm text-gray-400">
+          Versão: 1.0.0
+        </Text>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );

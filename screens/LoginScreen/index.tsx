@@ -11,43 +11,58 @@ import {
   ActivityIndicator,
   Platform,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../services/firebase";
+import { api } from "../../utils/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserContext } from "../../contexts/userContext";
 
 const LoginScreen = () => {
+  const { dispatch: userDispatch } = useContext(UserContext);
   const navigation = useNavigation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [inputs, setInputs] = useState<object>({
+    username: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  async function login() {
-    if (email && password) {
-      setLoading(true);
-      await signInWithEmailAndPassword(auth, email, password)
-        .then((userCredentials) => {
-          console.log(userCredentials);
-          navigation.reset({
-            routes: [{ name: "Actions" }],
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+  async function handleLogin() {
+    setLoading(true);
+    try {
+      const res = await api.post("/auth/login", inputs, {
+        withCredentials: true,
+      });
+
+      await AsyncStorage.setItem("user", JSON.stringify(res.data));
+
+      userDispatch({
+        type: "setName",
+        payload: {
+          name: inputs.username,
+        },
+      });
+
+      navigation.reset({
+        routes: [{ name: "Actions" }],
+      });
+      setLoading(false);
+    } catch (error) {
+      setError(error.response.data);
       setLoading(false);
     }
   }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView className="h-screen px-3 bg[#f5f5f5]">
+      <View className="h-screen px-3 bg[#f5f5f5]">
         <Image
           source={require("../../assets/images/logoOrange.png")}
-          className={`w-60 h-60 self-center ${
+          className={`w-60 h-60 self-center -mr-1 ${
             Platform.OS === "android" && "mt-7"
           }`}
+          resizeMode="cover"
         />
 
         <Text className="font-semibold text-4xl">Login</Text>
@@ -58,18 +73,23 @@ const LoginScreen = () => {
               <AntDesign name="user" size={24} color="gray" />
 
               <TextInput
-                value={email}
-                onChangeText={(text) => setEmail(text)}
-                placeholder="Email"
+                value={inputs.username}
+                onChangeText={(text) =>
+                  setInputs((prevState) => ({ ...prevState, username: text }))
+                }
+                placeholder="username"
                 className="flex-grow-1 max-w-xs"
-                keyboardType="email-address"
                 returnKeyType="next"
                 returnKeyLabel="Próximo"
                 autoFocus
               />
             </View>
 
-            <TouchableOpacity onPress={() => setEmail("")}>
+            <TouchableOpacity
+              onPress={() =>
+                setInputs((prevState) => ({ ...prevState, username: "" }))
+              }
+            >
               <AntDesign name="closecircle" size={16} color="gray" />
             </TouchableOpacity>
           </View>
@@ -79,14 +99,16 @@ const LoginScreen = () => {
               <FontAwesome5 name="lock" size={24} color="gray" />
 
               <TextInput
-                value={password}
-                onChangeText={(text) => setPassword(text)}
+                value={inputs.password}
+                onChangeText={(text) =>
+                  setInputs((prevState) => ({ ...prevState, password: text }))
+                }
                 placeholder="Senha"
                 className="flex-grow-1 max-w-xs"
                 secureTextEntry
                 returnKeyType="send"
                 returnKeyLabel="Enviar"
-                onSubmitEditing={login}
+                onSubmitEditing={handleLogin}
               />
             </View>
 
@@ -94,8 +116,13 @@ const LoginScreen = () => {
           </View>
         </View>
 
+        {error && (
+          <Text className="text-center text-red-500 font-semibold">
+            {error}
+          </Text>
+        )}
         <TouchableOpacity
-          onPress={login}
+          onPress={handleLogin}
           className="bg-[#F26E1D] rounded mt-8 w-full py-3 self-center items-center justify-center"
         >
           {loading ? (
@@ -120,7 +147,7 @@ const LoginScreen = () => {
             Esqueci minha senha
           </Text>
         </TouchableOpacity>
-      </KeyboardAvoidingView>
+      </View>
     </TouchableWithoutFeedback>
   );
 };

@@ -8,7 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   MaterialCommunityIcons,
   Octicons,
@@ -17,63 +17,52 @@ import {
 } from "@expo/vector-icons";
 import { Genres } from "../../mocks/Genres";
 import { useNavigation } from "@react-navigation/native";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../../services/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { api } from "../../utils/api";
+import { UserContext } from "../../contexts/userContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+interface BookProps {
+  id: number;
+  author: string;
+  title: string;
+  stars: number;
+  thumbnail: string;
+  description: string;
+  author_description: string;
+}
 
 const HomeScreen = () => {
+  const { state: user } = useContext(UserContext);
   const navigation = useNavigation();
   const [genres] = useState(Genres);
-  const [books, setBooks] = useState([]);
-  const [userEmail, setUserEmail] = useState("");
-  const [userName, setUserName] = useState();
-  const [loading, setLoading] = useState(false);
+  const [books, setBooks] = useState<BookProps[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      setUserEmail(user?.email);
-      setUserName(user?.displayName);
-    });
-  }, []);
-
-  const firstName = userName?.split(" ").slice(0, 1).join(" ");
-
-  useEffect(() => {
-    setLoading(true);
     const fetchData = async () => {
-      let list = [];
       try {
-        const querySnapshot = await getDocs(collection(db, "books"));
-        querySnapshot.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
+        await api.get("/books").then((data) => {
+          setBooks(data.data);
         });
-        setBooks(list);
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        console.log(error);
       }
-      setLoading(false);
     };
     fetchData();
   }, []);
+
+  const firstName = user.name?.split(" ").slice(0, 1).join(" ");
 
   return (
     <View className="bg-[#f5f5f5] px-4">
       <View className="flex-row items-center justify-between mt-7">
         <View className="mt-4 space-y-1 max-w-[200px]">
-          {userEmail === "admin@gmail.com" ? (
-            <Text className="text-gray-600 font-semibold text-2xl">
-              Bem vindo, <Text className="text-[#F26E1D]">Administrador</Text>!
-            </Text>
-          ) : (
-            <>
-              <Text className="text-gray-600 font-semibold text-2xl">
-                Olá, <Text className="text-[#F26E1D]">{firstName}</Text>!
-              </Text>
-              <Text className="text-gray-600 font-semibold">
-                O que você quer ler hoje?
-              </Text>
-            </>
-          )}
+          <Text className="text-gray-600 font-semibold text-2xl">
+            Olá, <Text className="text-[#F26E1D]">{firstName}</Text>!
+          </Text>
+          <Text className="text-gray-600 font-semibold">
+            O que você quer ler hoje?
+          </Text>
         </View>
 
         <View className="flex-row items-center space-x-3">
@@ -148,16 +137,18 @@ const HomeScreen = () => {
               onPress={() => {
                 navigation.navigate("BookDetail", {
                   title: book.title,
-                  image: book.imageUrl,
+                  image: book.thumbnail,
                   author: book.author,
                   stars: book.stars,
+                  description: book.description,
+                  author_desc: book.author_description,
                 });
               }}
               className="mr-8 w-32 h-66 bg-[#f5f5f5]"
               key={book?.id}
             >
               <Image
-                source={{ uri: book?.imageUrl }}
+                source={{ uri: book?.thumbnail }}
                 className="h-48 w-36 rounded-lg"
                 resizeMode="cover"
               />
