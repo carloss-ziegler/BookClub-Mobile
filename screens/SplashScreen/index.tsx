@@ -3,8 +3,6 @@ import { View } from "react-native";
 import React from "react";
 import LottieView from "lottie-react-native";
 import { useEffect, useRef } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../services/firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SplashScreen = ({ navigation }) => {
@@ -30,26 +28,8 @@ const SplashScreen = ({ navigation }) => {
     }, 2000);
   }, [navigation]);
 
-  // onAuthStateChanged(auth, (user) => {
-  //   if (user) {
-  //     console.log(user.displayName);
-  //     setTimeout(() => {
-  //       navigation.reset({
-  //         routes: [{ name: "Actions" }],
-  //       });
-  //     }, 2000);
-  //   } else {
-  //     console.log("nenhum usuário");
-  //     setTimeout(() => {
-  //       navigation.reset({
-  //         routes: [{ name: "InitialScreen" }],
-  //       });
-  //     }, 2000);
-  //   }
-  // });
-
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center justify-center bg-[#f5f5f5]">
       <LottieView
         ref={animation}
         autoPlay

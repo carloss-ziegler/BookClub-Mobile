@@ -20,6 +20,7 @@ import { useNavigation } from "@react-navigation/native";
 import { api } from "../../utils/api";
 import { UserContext } from "../../contexts/userContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserProps } from "../../utils/types";
 
 interface BookProps {
   id: number;
@@ -32,10 +33,11 @@ interface BookProps {
 }
 
 const HomeScreen = () => {
-  const { state: user } = useContext(UserContext);
   const navigation = useNavigation();
   const [genres] = useState(Genres);
   const [books, setBooks] = useState<BookProps[]>([]);
+  const [currentUser, setCurrentUser] = useState<UserProps[]>([]);
+  const [firstName, setFirstName] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -51,7 +53,15 @@ const HomeScreen = () => {
     fetchData();
   }, []);
 
-  const firstName = user.name?.split(" ").slice(0, 1).join(" ");
+  useEffect(() => {
+    const getUser = async () => {
+      const res = await AsyncStorage.getItem("user");
+      setCurrentUser(JSON.parse(res));
+      let firstName = JSON.parse(res);
+      setFirstName(firstName.name.split(" ").slice(0, 1).join(" "));
+    };
+    getUser();
+  }, []);
 
   return (
     <View className="bg-[#f5f5f5] px-4">

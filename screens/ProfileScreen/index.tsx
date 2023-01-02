@@ -18,6 +18,8 @@ const ProfileScreen = ({ navigation }) => {
     getUser();
   }, []);
 
+  console.log(currentUser);
+
   return (
     <View className="flex-1 bg-[#f5f5f5] px-4 py-6 justify-between mt-4">
       <View className="flex-1 justify-start">
@@ -31,7 +33,7 @@ const ProfileScreen = ({ navigation }) => {
           />
           <View className="max-w-[250px]">
             <Text className="text-[#F26E1D] font-semibold text-xl">
-              {currentUser.name}
+              {currentUser?.name}
             </Text>
           </View>
         </View>
@@ -114,6 +116,7 @@ const ProfileScreen = ({ navigation }) => {
               navigation.navigate("ProfileOptions", {
                 id: currentUser.id,
                 username: currentUser.username,
+                name: currentUser.name,
                 email: currentUser.email,
                 country: currentUser.country,
                 profilePic: currentUser.profilePic,

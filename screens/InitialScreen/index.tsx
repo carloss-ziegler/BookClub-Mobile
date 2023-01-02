@@ -7,16 +7,16 @@ const InitialScreen = ({ navigation }) => {
     <View className="flex-1 bg-[#F26E1D] items-center">
       <Image
         source={require("../../assets/images/whiteLogo.png")}
-        className="w-56 h-56 mt-20"
+        className="w-56 h-56 mt-20 -mr-2"
         resizeMode="cover"
       />
 
       <View className="items-center mt-10">
-        <Text className="text-white font-bold text-4xl">Bem Vindo!</Text>
-        <Text className="text-white mt-1 font-medium text-base">
+        <Text className="text-[#f5f5f5] font-bold text-4xl">Bem Vindo!</Text>
+        <Text className="text-[#f5f5f5] mt-1 font-medium text-base">
           A sua plataforma de livros online.
         </Text>
-        <Text className="text-white font-medium text-base">
+        <Text className="text-[#f5f5f5] font-medium text-base">
           Leia sem limites.
         </Text>
       </View>
@@ -24,7 +24,7 @@ const InitialScreen = ({ navigation }) => {
       <View className="mt-11 space-y-3">
         <TouchableOpacity
           onPress={() => navigation.navigate("RegisterScreen")}
-          className="bg-white py-3 w-80 items-center justify-center rounded"
+          className="bg-[#f5f5f5] py-3 w-80 items-center justify-center rounded"
         >
           <Text className="text-[#F26E1D] font-semibold text-lg">
             Criar conta
@@ -33,7 +33,7 @@ const InitialScreen = ({ navigation }) => {
 
         <TouchableOpacity
           onPress={() => navigation.navigate("LoginScreen")}
-          className="py-3 w-80 items-center justify-center rounded border border-[#fff]"
+          className="py-3 w-80 items-center justify-center rounded border border-[#f5f5f5]"
         >
           <Text className="text-white font-semibold text-lg">Fazer login</Text>
         </TouchableOpacity>
