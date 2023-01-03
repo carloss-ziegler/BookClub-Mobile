@@ -19,7 +19,6 @@ import LottieView from "lottie-react-native";
 const FavoriteScreen = ({ navigation }) => {
   const [user, setUser] = useState<UserProps[]>([]);
   const [pressed, setPressed] = useState<boolean>(false);
-  const [favorited, setFavorited] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
 
   const animation = useRef(null);
@@ -31,12 +30,18 @@ const FavoriteScreen = ({ navigation }) => {
   );
 
   useEffect(() => {
-    animation.current?.play();
     const getUser = async () => {
       const res = await AsyncStorage.getItem("user");
       setUser(JSON.parse(res));
     };
     getUser();
+  }, []);
+
+  useEffect(() => {
+    const play = () => {
+      animation.current?.play();
+    };
+    play();
   }, []);
 
   return (
@@ -70,6 +75,7 @@ const FavoriteScreen = ({ navigation }) => {
           <LottieView
             ref={animation}
             autoPlay
+            useNativeLooping
             loop
             source={require("../../assets/106964-shake-a-empty-box.json")}
             style={{

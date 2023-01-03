@@ -146,12 +146,14 @@ const HomeScreen = () => {
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate("BookDetail", {
+                  id: book.id,
                   title: book.title,
                   image: book.thumbnail,
                   author: book.author,
                   stars: book.stars,
                   description: book.description,
                   author_desc: book.author_description,
+                  userId: currentUser.id,
                 });
               }}
               className="mr-8 w-32 h-66 bg-[#f5f5f5]"

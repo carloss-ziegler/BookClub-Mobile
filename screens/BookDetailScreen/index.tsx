@@ -1,16 +1,54 @@
 // @ts-nocheck
 import { View, Text, Image, ScrollView, ActivityIndicator } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRoute } from "@react-navigation/native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { api } from "../../utils/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const BookDetailScreen = ({ navigation }) => {
+  const {
+    params: {
+      id,
+      userId,
+      title,
+      image,
+      author,
+      stars,
+      description,
+      author_desc,
+    },
+  } = useRoute();
   const [wantToRead, setWantToRead] = useState(false);
 
-  const {
-    params: { title, image, author, stars, description, author_desc },
-  } = useRoute();
+  const { isLoading, error, data } = useQuery(["favorites", id], () =>
+    api.get("/favorites?userId=" + userId).then((res) => {
+      return res.data;
+    })
+  );
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(
+    (favorited) => {
+      if (favorited)
+        return api.delete(`/favorites?userId=${userId}&bookId=${id}`);
+
+      return api.post(`/favorites?userId=${userId}&bookId=${id}`);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["favorites"]);
+      },
+    }
+  );
+
+  function handleFavorite() {
+    mutation.mutate(data.map((item) => item.id));
+  }
+
+  console.log(data);
 
   return (
     <ScrollView
@@ -26,8 +64,14 @@ const BookDetailScreen = ({ navigation }) => {
           <Text className="text-[#F26E1D] text-lg">Início</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity>
-          <Ionicons name="heart" size={32} color="#AC0B13" />
+        <TouchableOpacity onPress={handleFavorite}>
+          {isLoading ? (
+            <ActivityIndicator />
+          ) : data?.map((item) => item.id) == id ? (
+            <Ionicons name="heart" size={32} color="#AC0B13" />
+          ) : (
+            <Ionicons name="heart" size={32} color="#gray" />
+          )}
         </TouchableOpacity>
       </View>
 
