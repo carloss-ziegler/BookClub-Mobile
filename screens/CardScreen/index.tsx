@@ -13,19 +13,32 @@ import { Entypo } from "@expo/vector-icons";
 import Card from "../../assets/images/card.png";
 import Empty from "../../assets/images/emptyState.png";
 import { UserContext } from "../../contexts/userContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserProps } from "../../utils/types";
+import { api } from "../../utils/api";
+import { useRoute } from "@react-navigation/native";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface CardProps {
-  id: string;
+  id: number;
   cardName: string;
   cardNumber: string;
   expiryDate: string;
   cvv: string;
+  cardUserId: number;
 }
 
 const CardScreen = ({ navigation }) => {
-  const { state: user } = useContext(UserContext);
-  const [cardData, setCardData] = useState<CardProps[]>([]);
-  const [loading, setLoading] = useState(false);
+  const {
+    params: { userId, name },
+  } = useRoute();
+  const queryClient = useQueryClient();
+
+  const { isLoading, error, data }: CardProps[] = useQuery(["cards"], () =>
+    api.get("/cards?userId=" + userId).then((res) => {
+      return res.data;
+    })
+  );
 
   return (
     <View className="flex-1 bg-[#f5f5f5] px-4 py-6 mt-4">
@@ -54,9 +67,7 @@ const CardScreen = ({ navigation }) => {
           resizeMode="cover"
         />
         <View className="max-w-[250px]">
-          <Text className="text-[#F26E1D] font-semibold text-xl">
-            {user.name}
-          </Text>
+          <Text className="text-[#F26E1D] font-semibold text-xl">{name}</Text>
         </View>
       </View>
 
@@ -66,14 +77,18 @@ const CardScreen = ({ navigation }) => {
         </Text>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate("NewCard")}
+          onPress={() =>
+            navigation.navigate("NewCard", {
+              userId: userId,
+            })
+          }
           className="bg-[#F26E1D] px-2 h-6 items-center justify-center rounded-lg"
         >
           <Text className="text-[#f5f5f5] font-semibold">+ Cadastrar Novo</Text>
         </TouchableOpacity>
       </View>
 
-      {loading ? (
+      {isLoading ? (
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator color="252525" size="large" />
         </View>
@@ -86,7 +101,7 @@ const CardScreen = ({ navigation }) => {
             flex: 1,
           }}
         >
-          {cardData.length < 1 ? (
+          {data?.length == 0 ? (
             <View className="flex-1 items-center justify-center">
               <Image source={Empty} className="h-72 w-72" />
 
@@ -100,7 +115,7 @@ const CardScreen = ({ navigation }) => {
             </View>
           ) : (
             <>
-              {cardData?.map((item, index) => (
+              {data?.map((item, index) => (
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate("CardDetails", {
@@ -122,7 +137,7 @@ const CardScreen = ({ navigation }) => {
                   >
                     <View className="absolute top-4 left-4">
                       <Text className="text-[#f5f5f5] font-semibold">
-                        **{item?.cvv.charAt(item?.cvv.length - 1)}
+                        {item.cvv}
                       </Text>
                     </View>
 

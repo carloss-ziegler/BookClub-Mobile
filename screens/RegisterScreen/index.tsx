@@ -24,6 +24,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../../services/firebase";
 import { addDoc, collection } from "firebase/firestore";
 import axios from "axios";
+import { api } from "../../utils/api";
 
 const RegisterScreen = ({ navigation }) => {
   const [page, setPage] = useState(1);
@@ -44,53 +45,20 @@ const RegisterScreen = ({ navigation }) => {
   async function handleApiRegister() {
     try {
       setLoading(true);
-      await axios
-        .post("http://192.168.0.18:3001/auth/register", {
-          username: name,
-          email: email,
-          password: password,
-          name: name,
-        })
-        .then(() => {
-          navigation.navigate("LoginScreen");
-        });
+      await api.post("/auth/register", {
+        username: name,
+        email: email,
+        password: password,
+        name: name,
+      });
+
+      navigation.navigation("LoginScreen");
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      alert(error.response.data);
+      setLoading(false);
     }
   }
-
-  // async function handleRegister() {
-  //   setLoading(true);
-  //   await createUserWithEmailAndPassword(auth, email, password).then(
-  //     async (userCredentials) => {
-  //       await updateProfile(auth.currentUser, {
-  //         displayName: name,
-  //       });
-  //       navigation.reset({
-  //         routes: [{ name: "Actions" }],
-  //       });
-  //     }
-  //   );
-  //   setLoading(false);
-  // }
-
-  // async function handleAddCardToUser() {
-  //   await addDoc(collection(db, "user", email, "cards"), {
-  //     cardName: cardName,
-  //     cardNumber: cardNumber,
-  //     expiryDate: expiryDate,
-  //     cvv: cvv,
-  //   });
-  // }
-
-  // function finishRegister() {
-  //   Promise.all([handleRegister(), handleAddCardToUser()]).then(
-  //     ([registerResponse, userResponse, cardResponse]) => {
-  //       setLoading(false);
-  //     }
-  //   );
-  // }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

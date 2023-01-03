@@ -10,20 +10,18 @@ import {
   TextInput,
   ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 import Card from "../../assets/images/card.png";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { auth, db } from "../../services/firebase";
+import { api } from "../../utils/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const CardDetails = ({ navigation, route }) => {
   const [newCardName, setNewCardName] = useState<string>("");
   const [newCardNumber, setNewCardNumber] = useState<string>("");
   const [newExpiryDate, setNewExpiryDate] = useState<string>("");
   const [newCvv, setNewCvv] = useState<string>("");
-
-  const email = auth.currentUser?.email;
 
   const [loading, setLoading] = useState<boolean>(false);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
@@ -33,44 +31,51 @@ const CardDetails = ({ navigation, route }) => {
     throw new Error("Sem Dados");
   }
 
-  const cardRef = doc(db, "user", email, "cards", id);
+  const queryClient = useQueryClient();
 
-  async function deleteCard() {
-    setDeleteLoading(true);
-    await deleteDoc(cardRef)
-      .then(() => {
-        navigation.goBack();
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-    setDeleteLoading(false);
-  }
-
-  async function updateCard() {
-    if (newCardName && newCardNumber && newCvv && newExpiryDate) {
-      setLoading(true);
-      await updateDoc(cardRef, {
-        cardName: newCardName,
-        cardNumber: newCardNumber,
-        expiryDate: newExpiryDate,
-        cvv: newCvv,
-      })
-        .then(() => {
-          navigation.goBack();
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-      setLoading(false);
-    } else {
-      alert("Preencha todos os campos!");
+  const mutation = useMutation(
+    () => {
+      if (newCardName && newCardNumber && newCvv && newExpiryDate) {
+        setLoading(true);
+        api
+          .put("/cards?id=" + id, {
+            cardName: newCardName,
+            cardNumber: newCardNumber,
+            expiryDate: newExpiryDate,
+            cvv: newCvv,
+          })
+          .then(() => {
+            navigation.goBack();
+            setLoading(false);
+          });
+      } else {
+        alert("Preencha todos os campos!");
+      }
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["cards"]);
+      },
     }
-  }
+  );
+
+  const deleteCard = useMutation(
+    () => {
+      setLoading(true);
+      api.delete(`/cards/${id}`).then(() => {
+        navigation.goBack();
+        setLoading(false);
+      });
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["cards"]);
+      },
+    }
+  );
 
   return (
     <KeyboardAvoidingView
-      behavior="height"
       className={`${
         Platform.OS === "ios" ? "mt-5" : "mt-8"
       } h-screen bg-[#f5f5f5] px-4`}
@@ -94,10 +99,7 @@ const CardDetails = ({ navigation, route }) => {
       >
         <View className="absolute top-4 left-4">
           <Text className="text-[#f5f5f5] font-semibold">
-            **
-            {newCvv != ""
-              ? newCvv.charAt(newCvv.length - 1)
-              : cvv.charAt(cvv.length - 1)}
+            {newCvv != "" ? newCvv : cvv}
           </Text>
         </View>
 
@@ -149,6 +151,7 @@ const CardDetails = ({ navigation, route }) => {
             placeholder="Número do cartão"
             className="flex-1"
             keyboardType="number-pad"
+            autoFocus
           />
 
           <AntDesign name="creditcard" size={20} color="gray" />
@@ -194,7 +197,6 @@ const CardDetails = ({ navigation, route }) => {
         {loading ? (
           <TouchableOpacity
             disabled={loading}
-            onPress={updateCard}
             className="flex-row flex-1 items-center justify-center p-3 rounded bg-[#F26E1D]"
           >
             <Text className="text-lg font-semibold text-[#f5f5f5]">
@@ -205,7 +207,7 @@ const CardDetails = ({ navigation, route }) => {
         ) : (
           <>
             <TouchableOpacity
-              onPress={updateCard}
+              onPress={mutation.mutateAsync}
               className="flex-1 items-center justify-center p-3 rounded bg-[#F26E1D]"
             >
               <Text className="text-lg font-semibold text-[#f5f5f5]">
@@ -214,7 +216,7 @@ const CardDetails = ({ navigation, route }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={deleteCard}
+              onPress={deleteCard.mutateAsync}
               className="flex-1 items-center justify-center py-3 px-2 bg-transparent"
             >
               {deleteLoading ? (

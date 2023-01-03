@@ -13,39 +13,44 @@ import React, { useState } from "react";
 import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 import Card from "../../assets/images/card.png";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { addDoc, collection } from "firebase/firestore";
-import { auth, db } from "../../services/firebase";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "../../utils/api";
 
-const NewCard = ({ navigation }) => {
+const NewCard = ({ navigation, route }) => {
+  const { userId } = route.params;
   const [cardNumber, setCardNumber] = useState("");
   const [cardName, setCardName] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const email = auth.currentUser?.email;
+  const queryClient = useQueryClient();
 
-  async function addCard() {
-    if (cardName && cardNumber && expiryDate && cvv) {
-      setLoading(true);
-      await addDoc(collection(db, "user", email, "cards"), {
-        cardName: cardName,
-        cardNumber: cardNumber,
-        cvv: cvv,
-        expiryDate: expiryDate,
-      })
-        .then(() => {
-          console.log("sucesso");
-          navigation.navigate("CardScreen");
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-      setLoading(false);
-    } else {
-      alert("Preencha todos os campos!");
+  const mutation = useMutation(
+    () => {
+      if (cardNumber && cardName && expiryDate && cvv) {
+        setLoading(true);
+        api
+          .post("/cards?userId=" + userId, {
+            cardName: cardName,
+            cardNumber: cardNumber,
+            expiryDate: expiryDate,
+            cvv: cvv,
+          })
+          .then(() => {
+            navigation.goBack();
+            setLoading(false);
+          });
+      } else {
+        alert("Preencha todos os campos!");
+      }
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["cards"]);
+      },
     }
-  }
+  );
 
   return (
     <KeyboardAvoidingView className="h-screen bg-[#f5f5f5] px-4 py-6">
@@ -72,6 +77,10 @@ const NewCard = ({ navigation }) => {
           borderRadius: 8,
         }}
       >
+        <View className="absolute top-4 left-4">
+          <Text className="text-[#f5f5f5] font-semibold">{cvv}</Text>
+        </View>
+
         <Image
           source={{
             uri: "https://logosmarcas.net/wp-content/uploads/2020/09/Mastercard-Logo.png",
@@ -115,6 +124,7 @@ const NewCard = ({ navigation }) => {
             placeholder="Número do cartão"
             className="flex-1"
             keyboardType="number-pad"
+            autoFocus
           />
 
           <AntDesign name="creditcard" size={20} color="gray" />
@@ -158,7 +168,7 @@ const NewCard = ({ navigation }) => {
 
       <TouchableOpacity
         disabled={loading}
-        onPress={addCard}
+        onPress={mutation.mutateAsync}
         className="p-3 flex-row items-center justify-center mx-3 mb-3 bg-[#F26E1D] absolute bottom-0 right-0 left-0 rounded"
       >
         {loading ? (

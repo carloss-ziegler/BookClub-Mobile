@@ -4,11 +4,21 @@ import React, { useState, useEffect } from "react";
 import { Entypo, AntDesign } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserProps } from "../../utils/types";
+import { api } from "../../utils/api";
 
 const ProfileScreen = ({ navigation }) => {
-  const [isEnabled, setIsEnabled] = useState<boolean>(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   const [currentUser, setCurrentUser] = useState<UserProps[]>([]);
+  const [notification, setNotification] = useState([]);
+  const [isEnabled, setIsEnabled] = useState<boolean>(
+    notification?.includes(currentUser?.id) ? true : false
+  );
+  const toggleSwitchAdd = async () => {
+    await api.post("/notifications?userId=" + currentUser?.id);
+  };
+
+  const toggleSwitchRemove = async () => {
+    await api.post("/notifications?userId=" + currentUser?.id);
+  };
 
   useEffect(() => {
     const getUser = async () => {
@@ -18,7 +28,13 @@ const ProfileScreen = ({ navigation }) => {
     getUser();
   }, []);
 
-  console.log(currentUser);
+  useEffect(() => {
+    const getNotification = async () => {
+      const res = await api.get("/notifications?userId=" + currentUser?.id);
+      setNotification(res.data);
+    };
+    getNotification();
+  }, []);
 
   return (
     <View className="flex-1 bg-[#f5f5f5] px-4 py-6 justify-between mt-4">
@@ -49,7 +65,12 @@ const ProfileScreen = ({ navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate("CardScreen")}
+            onPress={() =>
+              navigation.navigate("CardScreen", {
+                userId: currentUser.id,
+                name: currentUser.name,
+              })
+            }
             className="flex-row items-center justify-between"
           >
             <Text className="text-gray-600 font-medium">
@@ -75,7 +96,7 @@ const ProfileScreen = ({ navigation }) => {
               trackColor={{ false: "#99999999", true: "#F26E1D" }}
               thumbColor={isEnabled ? "#f5f5f5" : "#f4f3f4"}
               ios_backgroundColor="#99999999"
-              onValueChange={toggleSwitch}
+              onValueChange=""
               value={isEnabled}
             />
           </TouchableOpacity>

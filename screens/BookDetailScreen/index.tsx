@@ -32,10 +32,11 @@ const BookDetailScreen = ({ navigation }) => {
 
   const mutation = useMutation(
     (favorited) => {
-      if (favorited)
+      if (favorited) {
         return api.delete(`/favorites?userId=${userId}&bookId=${id}`);
-
-      return api.post(`/favorites?userId=${userId}&bookId=${id}`);
+      } else {
+        return api.post(`/favorites?userId=${userId}&bookId=${id}`);
+      }
     },
     {
       onSuccess: () => {
@@ -45,7 +46,7 @@ const BookDetailScreen = ({ navigation }) => {
   );
 
   function handleFavorite() {
-    mutation.mutate(data.map((item) => item.id));
+    mutation.mutate(data.map((item) => item.id) == id);
   }
 
   console.log(data);
