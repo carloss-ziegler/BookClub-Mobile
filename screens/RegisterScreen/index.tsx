@@ -170,7 +170,7 @@ const RegisterScreen = ({ navigation }) => {
                     expiryDate &&
                     cvv
                   ) {
-                    // finishRegister();
+                    handleApiRegister();
                   } else {
                     alert("Preencha todos os campos!");
                   }
