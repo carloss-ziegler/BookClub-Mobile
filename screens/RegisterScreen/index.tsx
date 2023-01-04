@@ -20,10 +20,6 @@ import Card from "../../assets/images/card.png";
 import Step1 from "../../components/RegisterScreens/Step1";
 import Step2 from "../../components/RegisterScreens/Step2";
 import Step3 from "../../components/RegisterScreens/Step3";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, db } from "../../services/firebase";
-import { addDoc, collection } from "firebase/firestore";
-import axios from "axios";
 import { api } from "../../utils/api";
 
 const RegisterScreen = ({ navigation }) => {
@@ -50,6 +46,7 @@ const RegisterScreen = ({ navigation }) => {
         email: email,
         password: password,
         name: name,
+        profilePic: file ? file : null,
       });
 
       navigation.navigation("LoginScreen");
@@ -88,7 +85,7 @@ const RegisterScreen = ({ navigation }) => {
 
               <View className="absolute bottom-5 right-5">
                 <Text className="text-[#f5f5f5] font-semibold">
-                  {expiryDate}
+                  {expiryDate.replace(/(\d{2})(\d{2})/, "$1/$2")}
                 </Text>
               </View>
 

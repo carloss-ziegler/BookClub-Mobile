@@ -1,6 +1,14 @@
 {
   "expo": {
     "name": "BookApp",
+    "plugins": [
+      [
+        "expo-image-picker",
+          {
+            "photosPermission": "Permissão para acessar as fotos"
+          }
+      ]
+    ],
     "slug": "BookApp",
     "version": "1.0.0",
     "orientation": "portrait",

@@ -39,14 +39,19 @@ const ProfileScreen = ({ navigation }) => {
   return (
     <View className="flex-1 bg-[#f5f5f5] px-4 py-6 justify-between mt-4">
       <View className="flex-1 justify-start">
-        <View className="flex-row items-center space-x-2 mt-5">
-          <Image
-            source={{
-              uri: "https://backoffice.freedomhint.com/uploads/images/profile_picture/mail_pro.png",
-            }}
-            className="w-14 h-14 rounded-lg"
-            resizeMode="cover"
-          />
+        <View className="flex-row items-center space-x-3 mt-5">
+          <View className="bg-gray-500 overflow-hidden rounded-full">
+            <Image
+              source={{
+                uri: currentUser.profilePic
+                  ? currentUser.profilePic
+                  : "https://backoffice.freedomhint.com/uploads/images/profile_picture/mail_pro.png",
+              }}
+              className="w-14 h-14 rounded-lg"
+              resizeMode="contain"
+            />
+          </View>
+
           <View className="max-w-[250px]">
             <Text className="text-[#F26E1D] font-semibold text-xl">
               {currentUser?.name}
@@ -69,6 +74,7 @@ const ProfileScreen = ({ navigation }) => {
               navigation.navigate("CardScreen", {
                 userId: currentUser.id,
                 name: currentUser.name,
+                profilePic: currentUser.profilePic,
               })
             }
             className="flex-row items-center justify-between"

@@ -8,16 +8,13 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useState, useContext } from "react";
+import React from "react";
 import { Entypo } from "@expo/vector-icons";
 import Card from "../../assets/images/card.png";
 import Empty from "../../assets/images/emptyState.png";
-import { UserContext } from "../../contexts/userContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { UserProps } from "../../utils/types";
 import { api } from "../../utils/api";
 import { useRoute } from "@react-navigation/native";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 interface CardProps {
   id: number;
@@ -30,9 +27,8 @@ interface CardProps {
 
 const CardScreen = ({ navigation }) => {
   const {
-    params: { userId, name },
+    params: { userId, name, profilePic },
   } = useRoute();
-  const queryClient = useQueryClient();
 
   const { isLoading, error, data }: CardProps[] = useQuery(["cards"], () =>
     api.get("/cards?userId=" + userId).then((res) => {
@@ -59,13 +55,17 @@ const CardScreen = ({ navigation }) => {
       </View>
 
       <View className="flex-row items-center space-x-2 mt-5 mb-10">
-        <Image
-          source={{
-            uri: "https://backoffice.freedomhint.com/uploads/images/profile_picture/mail_pro.png",
-          }}
-          className="w-14 h-14 rounded-lg"
-          resizeMode="cover"
-        />
+        <View className="overflow-hidden bg-gray-500 p-2 justify-center mt-5 rounded-full items-center">
+          <Image
+            source={{
+              uri: profilePic
+                ? profilePic
+                : "https://backoffice.freedomhint.com/uploads/images/profile_picture/mail_pro.png",
+            }}
+            className="w-14 h-14"
+            resizeMode="contain"
+          />
+        </View>
         <View className="max-w-[250px]">
           <Text className="text-[#F26E1D] font-semibold text-xl">{name}</Text>
         </View>
@@ -137,7 +137,7 @@ const CardScreen = ({ navigation }) => {
                   >
                     <View className="absolute top-4 left-4">
                       <Text className="text-[#f5f5f5] font-semibold">
-                        {item.cvv}
+                        {item?.cvv}
                       </Text>
                     </View>
 
@@ -157,7 +157,7 @@ const CardScreen = ({ navigation }) => {
 
                     <View className="absolute bottom-5 right-5">
                       <Text className="text-[#f5f5f5] font-semibold">
-                        {item?.expiryDate}
+                        {item?.expiryDate.replace(/(\d{2})(\d{2})/, "$1/$2")}
                       </Text>
                     </View>
 

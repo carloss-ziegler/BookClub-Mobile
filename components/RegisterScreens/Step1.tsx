@@ -1,8 +1,16 @@
 // @ts-nocheck
-import { View, TextInput, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import { Feather, AntDesign } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import * as ImagePicker from "expo-image-picker";
+import { api } from "../../utils/api";
 
 interface Step1Props {
   name: string;
@@ -36,13 +44,12 @@ const Step1 = ({
       }}
       className="mt-5"
     >
-      <View className="w-full border h-14 border-[#33333333] rounded bg-white flex-row items-center px-3">
+      <View className="w-full mt-3 border h-14 border-[#33333333] rounded bg-white flex-row items-center px-3">
         <TextInput
           value={name}
           onChangeText={(value) => setName(value)}
           placeholder="Nome completo"
           className="flex-1"
-          autoFocus
         />
 
         <AntDesign name="closecircleo" size={18} color="#9C9C9C" />

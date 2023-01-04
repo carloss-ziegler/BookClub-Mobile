@@ -76,7 +76,10 @@ const Step3 = ({
       <View className="w-full mt-4 border border-[#33333333] flex-row rounded items-center px-3 h-14 bg-white">
         <TextInput
           value={expiryDate}
-          onChangeText={(value) => setExpiryDate(value)}
+          onChangeText={(value) =>
+            setExpiryDate(value.replace(/(\d{2})(\d{2})/, "$1/$2"))
+          }
+          maxLength={5}
           placeholder="Data de expiração"
           className="flex-1"
         />

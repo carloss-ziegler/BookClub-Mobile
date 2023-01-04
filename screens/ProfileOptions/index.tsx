@@ -83,7 +83,7 @@ const ProfileOptions = ({ navigation, route }) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <>
         <KeyboardAvoidingView
-          behavior="height"
+          behavior="padding"
           className="flex-1 bg-[#f5f5f5] px-4 py-6"
         >
           <View className="items-center flex-row justify-between">
@@ -102,7 +102,7 @@ const ProfileOptions = ({ navigation, route }) => {
             <View className="flex-1" />
           </View>
 
-          <View className="self-center overflow-hidden bg-white p-2 justify-center mt-5 rounded-full items-center">
+          <View className="self-center overflow-hidden bg-gray-500 p-2 justify-center mt-5 rounded-full items-center">
             <Image
               source={{
                 uri: profilePic

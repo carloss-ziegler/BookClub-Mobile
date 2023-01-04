@@ -119,7 +119,9 @@ const CardDetails = ({ navigation, route }) => {
 
         <View className="absolute bottom-5 right-5">
           <Text className="text-[#f5f5f5] font-semibold">
-            {newExpiryDate != "" ? newExpiryDate : expiryDate}
+            {newExpiryDate != ""
+              ? newExpiryDate.replace(/(\d{2})(\d{2})/, "$1/$2")
+              : expiryDate.replace(/(\d{2})(\d{2})/, "$1/$2")}
           </Text>
         </View>
 
@@ -171,9 +173,13 @@ const CardDetails = ({ navigation, route }) => {
         <View className="w-full mt-4 border border-[#33333333] flex-row rounded items-center px-3 h-14 bg-white">
           <TextInput
             value={newExpiryDate}
-            onChangeText={(value) => setNewExpiryDate(value)}
+            onChangeText={(value) =>
+              setNewExpiryDate(value.replace(/(\d{2})(\d{2})/, "$1/$2"))
+            }
             placeholder="Data de expiração"
             className="flex-1"
+            keyboardType="number-pad"
+            maxLength={5}
           />
 
           <MaterialIcons name="date-range" size={20} color="gray" />

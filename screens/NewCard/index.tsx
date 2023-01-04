@@ -96,7 +96,9 @@ const NewCard = ({ navigation, route }) => {
         </View>
 
         <View className="absolute bottom-5 right-5">
-          <Text className="text-[#f5f5f5] font-semibold">{expiryDate}</Text>
+          <Text className="text-[#f5f5f5] font-semibold">
+            {expiryDate.replace(/(\d{2})(\d{2})/, "$1/$2").trim()}
+          </Text>
         </View>
 
         <View className="absolute bottom-5 left-5">
@@ -127,7 +129,11 @@ const NewCard = ({ navigation, route }) => {
             autoFocus
           />
 
-          <AntDesign name="creditcard" size={20} color="gray" />
+          {cardNumber.length == 19 ? (
+            <AntDesign name="checkcircleo" size={20} color="#048444" />
+          ) : (
+            <AntDesign name="creditcard" size={20} color="gray" />
+          )}
         </View>
 
         <View className="w-full mt-4 border border-[#33333333] flex-row rounded items-center px-3 h-14 bg-white">
@@ -140,16 +146,21 @@ const NewCard = ({ navigation, route }) => {
 
           <AntDesign name="idcard" size={20} color="gray" />
         </View>
-
         <View className="w-full mt-4 border border-[#33333333] flex-row rounded items-center px-3 h-14 bg-white">
           <TextInput
-            value={expiryDate}
+            value={expiryDate.replace(/(\d{2})(\d{2})/, "$1/$2").trim()}
             onChangeText={(value) => setExpiryDate(value)}
             placeholder="Data de expiração"
             className="flex-1"
+            maxLength={5}
+            keyboardType="number-pad"
           />
 
-          <MaterialIcons name="date-range" size={20} color="gray" />
+          {expiryDate.length == 4 ? (
+            <AntDesign name="checkcircleo" size={20} color="#048444" />
+          ) : (
+            <MaterialIcons name="date-range" size={20} color="gray" />
+          )}
         </View>
 
         <View className="w-full mt-4 border border-[#33333333] flex-row rounded items-center px-3 h-14 bg-white">
@@ -162,7 +173,11 @@ const NewCard = ({ navigation, route }) => {
             maxLength={3}
           />
 
-          <AntDesign name="checkcircleo" size={20} color="gray" />
+          {cvv.length == 3 ? (
+            <AntDesign name="checkcircleo" size={20} color="#048444" />
+          ) : (
+            <AntDesign name="checkcircleo" size={20} color="gray" />
+          )}
         </View>
       </KeyboardAwareScrollView>
 

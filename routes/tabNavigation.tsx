@@ -3,8 +3,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
 import FavoriteScreen from "../screens/FavoriteScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-const Tab = createBottomTabNavigator();
 import { Octicons, Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
+
+const Tab = createBottomTabNavigator();
 
 export const TabNavigation = () => {
   return (
@@ -23,6 +25,11 @@ export const TabNavigation = () => {
           tabBarLabel: "Início",
           tabBarActiveTintColor: "#F26E1D",
         }}
+        listeners={() => ({
+          tabPress: () => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          },
+        })}
       />
 
       <Tab.Screen
@@ -39,6 +46,11 @@ export const TabNavigation = () => {
           tabBarLabel: "Favoritos",
           tabBarActiveTintColor: "#F26E1D",
         }}
+        listeners={() => ({
+          tabPress: () => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          },
+        })}
       />
 
       <Tab.Screen
@@ -55,6 +67,11 @@ export const TabNavigation = () => {
           tabBarLabel: "Perfil",
           tabBarActiveTintColor: "#F26E1D",
         }}
+        listeners={() => ({
+          tabPress: () => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          },
+        })}
       />
     </Tab.Navigator>
   );
