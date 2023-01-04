@@ -82,6 +82,7 @@ const Step3 = ({
           maxLength={5}
           placeholder="Data de expiração"
           className="flex-1"
+          keyboardType="number-pad"
         />
 
         <MaterialIcons name="date-range" size={20} color="gray" />

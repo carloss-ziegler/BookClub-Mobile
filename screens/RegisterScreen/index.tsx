@@ -46,7 +46,6 @@ const RegisterScreen = ({ navigation }) => {
         email: email,
         password: password,
         name: name,
-        profilePic: file ? file : null,
       });
 
       navigation.navigation("LoginScreen");

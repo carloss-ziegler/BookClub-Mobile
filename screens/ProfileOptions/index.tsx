@@ -71,7 +71,7 @@ const ProfileOptions = ({ navigation, route }) => {
       await AsyncStorage.removeItem("users");
 
       navigation.reset({
-        routes: [{ name: "LoginScreen" }],
+        routes: [{ name: "InitialScreen" }],
       });
     } catch (error) {
       alert(error);
@@ -278,9 +278,15 @@ const ProfileOptions = ({ navigation, route }) => {
                 onPress={deleteUser}
                 className="items-center justify-center py-2 flex-1 bg-transparent"
               >
-                <Text className="text-sm text-red-500 font-semibold">
-                  Confirmar
-                </Text>
+                {deleteLoading ? (
+                  <ActivityIndicator color="#252525" />
+                ) : (
+                  <>
+                    <Text className="text-sm text-red-500 font-semibold">
+                      Confirmar
+                    </Text>
+                  </>
+                )}
               </TouchableOpacity>
             </View>
           </View>
