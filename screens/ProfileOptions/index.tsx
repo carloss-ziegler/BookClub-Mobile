@@ -53,7 +53,7 @@ const ProfileOptions = ({ navigation, route }) => {
     try {
       await api.put(`/users/${id}`, newValues);
 
-      await AsyncStorage.setItem("users", JSON.stringify(newValues));
+      await AsyncStorage.setItem("user", JSON.stringify(newValues));
 
       navigation.goBack();
       setLoading(false);
@@ -68,7 +68,7 @@ const ProfileOptions = ({ navigation, route }) => {
     try {
       await api.delete(`/users/${id}`);
 
-      await AsyncStorage.removeItem("users");
+      await AsyncStorage.removeItem("user");
 
       navigation.reset({
         routes: [{ name: "InitialScreen" }],
