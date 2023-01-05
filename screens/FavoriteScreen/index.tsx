@@ -3,46 +3,61 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Platform,
   FlatList,
   Image,
   ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../utils/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserProps } from "../../utils/types";
 import LottieView from "lottie-react-native";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 const FavoriteScreen = ({ navigation }) => {
   const [user, setUser] = useState<UserProps[]>([]);
   const [pressed, setPressed] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [bookData, setBookData] = useState([]);
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    useQuery(["favorites"], () =>
+      api.get("/favorites?userId=" + user.id).then((res) => {
+        setBookData(res.data);
+      })
+    );
+
+    setRefreshing(false);
+  }, []);
 
   const animation = useRef(null);
 
-  const { isLoading, error, data } = useQuery(["favorites", user.id], () =>
+  useQuery(["favorites"], () =>
     api.get("/favorites?userId=" + user.id).then((res) => {
-      return res.data;
+      setBookData(res.data);
     })
   );
 
   useEffect(() => {
+    animation.current?.play();
     const getUser = async () => {
       const res = await AsyncStorage.getItem("user");
       setUser(JSON.parse(res));
     };
     getUser();
-  }, []);
+  }, [navigation]);
 
   useEffect(() => {
     const play = () => {
       animation.current?.play();
     };
     play();
-  }, []);
+  }, [navigation]);
 
   return (
     <View className="flex-1 bg-[#e5e5e5] p-5">
@@ -64,14 +79,23 @@ const FavoriteScreen = ({ navigation }) => {
 
       <View className="space-y-1 mt-5 items-center justify-between flex-row">
         <Text className="text-gray-500 text-lg">
-          {data?.length < 1 && <Text>Nenhum livro favoritado</Text>}
-          {data?.length > 0 && <>{data?.length} livros favoritados</>}
+          {bookData?.length < 1 && <Text>Nenhum livro favoritado</Text>}
+          {bookData?.length > 0 && <>{bookData?.length} livros favoritados</>}
         </Text>
         <Entypo name="open-book" size={28} color="#F26E1D" />
       </View>
 
-      {data?.length < 1 ? (
-        <View className="flex-1 items-center justify-center">
+      {bookData?.length < 1 ? (
+        <ScrollView
+          contentContainerStyle={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          // refreshControl={
+          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          // }
+        >
           <LottieView
             ref={animation}
             autoPlay
@@ -90,19 +114,22 @@ const FavoriteScreen = ({ navigation }) => {
           <Text className="text-gray-400 text-center font-medium text-sm">
             Comece favoritando seu primeiro livro!
           </Text>
-        </View>
+        </ScrollView>
       ) : (
         <>
-          {isLoading ? (
+          {loading ? (
             <View className="flex-1 items-center justify-center">
               <Text>Carregando...</Text>
             </View>
           ) : (
             <FlatList
-              data={data}
+              data={bookData}
               showsVerticalScrollIndicator={false}
               style={{ marginTop: 16 }}
               contentContainerStyle={{ marginTop: 20 }}
+              // refreshControl={
+              //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              // }
               keyExtractor={(item) => item.id}
               renderItem={({ item: book, index }) => {
                 return (

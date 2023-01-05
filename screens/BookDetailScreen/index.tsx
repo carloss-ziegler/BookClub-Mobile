@@ -21,35 +21,39 @@ const BookDetailScreen = ({ navigation }) => {
     },
   } = useRoute();
   const [wantToRead, setWantToRead] = useState(false);
+  const queryClient = useQueryClient();
 
-  const { isLoading, error, data } = useQuery(["favorites", id], () =>
+  const { isLoading, error, data } = useQuery(["favorited"], () =>
     api.get("/favorites?userId=" + userId).then((res) => {
       return res.data;
     })
   );
 
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation(
-    (favorited) => {
-      if (favorited) {
-        return api.delete(`/favorites?userId=${userId}&bookId=${id}`);
-      } else {
-        return api.post(`/favorites?userId=${userId}&bookId=${id}`);
-      }
+  const addToFavorite = useMutation(
+    () => {
+      return api.post(`/favorites?userId=${userId}`, {
+        bookId: id,
+      });
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["favorites"]);
+        queryClient.invalidateQueries(["favorited"]);
       },
     }
   );
 
-  function handleFavorite() {
-    mutation.mutate(data.map((item) => item.id) == id);
-  }
-
-  console.log(data);
+  const removeFromFavorite = useMutation(
+    () => {
+      return api.delete(`/favorites?userId=${userId}`, {
+        bookId: id,
+      });
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["favorited"]);
+      },
+    }
+  );
 
   return (
     <ScrollView
@@ -65,15 +69,17 @@ const BookDetailScreen = ({ navigation }) => {
           <Text className="text-[#F26E1D] text-lg">Início</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleFavorite}>
-          {isLoading ? (
-            <ActivityIndicator />
-          ) : data?.map((item) => item.id) == id ? (
+        {data?.map((item) => item.id) != id && (
+          <TouchableOpacity onPress={addToFavorite.mutate}>
+            <Ionicons name="heart" size={32} color="gray" />
+          </TouchableOpacity>
+        )}
+
+        {data?.length > 0 && data?.map((item) => item.id) == id && (
+          <TouchableOpacity onPress={removeFromFavorite.mutate}>
             <Ionicons name="heart" size={32} color="#AC0B13" />
-          ) : (
-            <Ionicons name="heart" size={32} color="#gray" />
-          )}
-        </TouchableOpacity>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View className="self-center items-center">
