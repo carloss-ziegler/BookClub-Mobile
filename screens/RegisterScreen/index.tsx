@@ -41,15 +41,17 @@ const RegisterScreen = ({ navigation }) => {
   async function handleApiRegister() {
     try {
       setLoading(true);
-      await api.post("/auth/register", {
-        username: name,
-        email: email,
-        password: password,
-        name: name,
-      });
-
-      navigation.navigation("LoginScreen");
-      setLoading(false);
+      await api
+        .post("/auth/register", {
+          username: name,
+          email: email,
+          password: password,
+          name: name,
+        })
+        .then(() => {
+          navigation.navigation("LoginScreen");
+          setLoading(false);
+        });
     } catch (error) {
       alert(error.response.data);
       setLoading(false);
