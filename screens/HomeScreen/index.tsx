@@ -22,7 +22,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserProps } from "../../utils/types";
 
 interface BookProps {
-  id: number;
+  id: string;
   author: string;
   title: string;
   stars: number;
@@ -30,12 +30,13 @@ interface BookProps {
   description: string;
   author_description: string;
 }
+[];
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [genres] = useState(Genres);
   const [books, setBooks] = useState<BookProps[]>([]);
-  const [currentUser, setCurrentUser] = useState<UserProps[]>([]);
+  const [currentUser, setCurrentUser] = useState<UserProps>([]);
   const [firstName, setFirstName] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
   const [isSelected, setIsSelected] = useState();

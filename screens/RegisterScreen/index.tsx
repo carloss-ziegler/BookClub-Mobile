@@ -162,11 +162,11 @@ const RegisterScreen = ({ navigation }) => {
                   } else if (page == 2 && isSelected != undefined) {
                     setPage(page + 1);
                   } else if (
-                    page == 3 &&
-                    cardNumber &&
-                    cardName &&
-                    expiryDate &&
-                    cvv
+                    page == 3
+                    // cardNumber &&
+                    // cardName &&
+                    // expiryDate &&
+                    // cvv
                   ) {
                     handleApiRegister();
                   } else {

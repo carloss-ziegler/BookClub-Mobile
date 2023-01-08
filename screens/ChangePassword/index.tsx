@@ -12,28 +12,10 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { Entypo, Ionicons } from "@expo/vector-icons";
-import { auth } from "../../services/firebase";
-import { updatePassword } from "firebase/auth";
 
 const ChangePassword = ({ navigation }) => {
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const user = auth.currentUser;
-  const name = auth.currentUser?.displayName;
-  const email = auth.currentUser?.email;
-
-  async function handleChangePassword() {
-    setLoading(true);
-    await updatePassword(user, newPassword)
-      .then(() => {
-        console.log("Alterado");
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-    setLoading(false);
-  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -66,8 +48,8 @@ const ChangePassword = ({ navigation }) => {
             resizeMode="cover"
           />
           <View className="max-w-[250px]">
-            <Text className="text-[#F26E1D] font-semibold text-xl">{name}</Text>
-            <Text className="text-gray-500">{email}</Text>
+            <Text className="text-[#F26E1D] font-semibold text-xl">Nome</Text>
+            <Text className="text-gray-500">email</Text>
           </View>
         </View>
 
@@ -119,7 +101,7 @@ const ChangePassword = ({ navigation }) => {
             </View>
 
             <TouchableOpacity
-              onPress={handleChangePassword}
+              onPress=""
               className="w-full mt-5 py-3 items-center justify-center bg-[#F26E1D] rounded"
             >
               {loading ? (
