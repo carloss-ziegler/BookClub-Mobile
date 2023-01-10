@@ -49,7 +49,7 @@ const RegisterScreen = ({ navigation }) => {
           name: name,
         })
         .then(() => {
-          navigation.navigation("LoginScreen");
+          navigation.navigate("LoginScreen");
           setLoading(false);
         });
     } catch (error) {
