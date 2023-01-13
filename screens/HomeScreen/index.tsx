@@ -19,53 +19,70 @@ import { Genres } from "../../mocks/Genres";
 import { useNavigation } from "@react-navigation/native";
 import { api } from "../../utils/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { UserProps } from "../../utils/types";
-
-interface BookProps {
-  id: string;
-  author: string;
-  title: string;
-  stars: number;
-  thumbnail: string;
-  description: string;
-  author_description: string;
-}
-[];
+import { BookProps, IGenresProps, UserProps } from "../../utils/types";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const [genres] = useState(Genres);
+  const [genres, setGenres] = useState<IGenresProps[]>([]);
   const [books, setBooks] = useState<BookProps[]>([]);
   const [currentUser, setCurrentUser] = useState<UserProps>([]);
   const [firstName, setFirstName] = useState("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [isSelected, setIsSelected] = useState();
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        await api.get("/books").then((data) => {
-          setBooks(data.data);
-        });
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-        setLoading(false);
-      }
-    };
-    fetchData();
+    Promise.all([
+      api.get("/genres"),
+      api.get("/books"),
+      AsyncStorage.getItem("user"),
+    ]).then(([genresResponse, booksResponse, userResponse]) => {
+      setGenres(genresResponse.data);
+      setBooks(booksResponse.data);
+      setCurrentUser(JSON.parse(userResponse));
+      let firstName = JSON.parse(userResponse);
+      setFirstName(firstName.name.split(" ").slice(0, 1).join(" "));
+      setLoading(false);
+    });
   }, []);
 
-  useEffect(() => {
-    const getUser = async () => {
-      const res = await AsyncStorage.getItem("user");
-      setCurrentUser(JSON.parse(res));
-      let firstName = JSON.parse(res);
-      setFirstName(firstName.name.split(" ").slice(0, 1).join(" "));
-    };
-    getUser();
-  }, []);
+  // useEffect(() => {
+  //   const fetchGenres = async () => {
+  //     try {
+  //       await api.get("/genres").then((response) => {
+  //         setGenres(response.data);
+  //       });
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchGenres();
+  // }, []);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setLoading(true);
+  //     try {
+  //       await api.get("/books").then((data) => {
+  //         setBooks(data.data);
+  //       });
+  //       setLoading(false);
+  //     } catch (error) {
+  //       console.log(error);
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
+
+  // useEffect(() => {
+  //   const getUser = async () => {
+  //     const res = await AsyncStorage.getItem("user");
+  //     setCurrentUser(JSON.parse(res));
+  //     let firstName = JSON.parse(res);
+  //     setFirstName(firstName.name.split(" ").slice(0, 1).join(" "));
+  //   };
+  //   getUser();
+  // }, []);
 
   return (
     <ScrollView
@@ -132,7 +149,7 @@ const HomeScreen = () => {
         horizontal
         showsHorizontalScrollIndicator={false}
       >
-        {genres.map((genre, index) => (
+        {genres?.map((genre, index) => (
           <TouchableOpacity
             onPress={() => {
               setIsSelected(genre.id);

@@ -12,7 +12,7 @@ import { Ionicons, Entypo } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../utils/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { UserProps } from "../../utils/types";
+import { BookProps, UserProps } from "../../utils/types";
 import LottieView from "lottie-react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
@@ -20,7 +20,6 @@ const FavoriteScreen = ({ navigation }) => {
   const [user, setUser] = useState<UserProps[]>([]);
   const [pressed, setPressed] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [bookData, setBookData] = useState([]);
 
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -36,13 +35,6 @@ const FavoriteScreen = ({ navigation }) => {
   }, []);
 
   const animation = useRef(null);
-
-  useQuery(["favorites"], () =>
-    api.get("/favorites?userId=" + user.id).then((res) => {
-      setBookData(res.data);
-    })
-  );
-
   useEffect(() => {
     animation.current?.play();
     const getUser = async () => {
@@ -51,6 +43,12 @@ const FavoriteScreen = ({ navigation }) => {
     };
     getUser();
   }, [navigation]);
+
+  const { isLoading, error, data } = useQuery(["favorites"], () =>
+    api.get("/favorites?userId=" + user.id).then((res) => {
+      return res.data;
+    })
+  );
 
   useEffect(() => {
     const play = () => {
@@ -79,13 +77,13 @@ const FavoriteScreen = ({ navigation }) => {
 
       <View className="space-y-1 mt-5 items-center justify-between flex-row">
         <Text className="text-gray-500 text-lg">
-          {bookData?.length < 1 && <Text>Nenhum livro favoritado</Text>}
-          {bookData?.length > 0 && <>{bookData?.length} livros favoritados</>}
+          {data?.length < 1 && <Text>Nenhum livro favoritado</Text>}
+          {data?.length > 0 && <>{data?.length} livros favoritados</>}
         </Text>
         <Entypo name="open-book" size={28} color="#F26E1D" />
       </View>
 
-      {bookData?.length < 1 ? (
+      {data?.length < 1 ? (
         <ScrollView
           contentContainerStyle={{
             flex: 1,
@@ -117,13 +115,13 @@ const FavoriteScreen = ({ navigation }) => {
         </ScrollView>
       ) : (
         <>
-          {loading ? (
+          {isLoading ? (
             <View className="flex-1 items-center justify-center">
               <Text>Carregando...</Text>
             </View>
           ) : (
             <FlatList
-              data={bookData}
+              data={data}
               showsVerticalScrollIndicator={false}
               style={{ marginTop: 16 }}
               contentContainerStyle={{ marginTop: 20 }}
