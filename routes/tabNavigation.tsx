@@ -29,6 +29,9 @@ export const TabNavigation = () => {
           tabPress: () => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           },
+          tabLongPress: () => {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          },
         })}
       />
 
@@ -50,6 +53,9 @@ export const TabNavigation = () => {
           tabPress: () => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           },
+          tabLongPress: () => {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          },
         })}
       />
 
@@ -70,6 +76,9 @@ export const TabNavigation = () => {
         listeners={() => ({
           tabPress: () => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          },
+          tabLongPress: () => {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           },
         })}
       />

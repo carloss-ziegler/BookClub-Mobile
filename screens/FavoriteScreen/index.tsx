@@ -21,20 +21,8 @@ const FavoriteScreen = ({ navigation }) => {
   const [pressed, setPressed] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [refreshing, setRefreshing] = React.useState(false);
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    useQuery(["favorites"], () =>
-      api.get("/favorites?userId=" + user.id).then((res) => {
-        setBookData(res.data);
-      })
-    );
-
-    setRefreshing(false);
-  }, []);
-
   const animation = useRef(null);
+
   useEffect(() => {
     animation.current?.play();
     const getUser = async () => {
@@ -49,13 +37,6 @@ const FavoriteScreen = ({ navigation }) => {
       return res.data;
     })
   );
-
-  useEffect(() => {
-    const play = () => {
-      animation.current?.play();
-    };
-    play();
-  }, [navigation]);
 
   return (
     <View className="flex-1 bg-[#e5e5e5] p-5">

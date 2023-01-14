@@ -1,5 +1,6 @@
 //@ts-nocheck
 export const initialState = {
+  id: "",
   profilePic: "",
   name: "",
   email: "",
@@ -29,6 +30,7 @@ export const UserReducer = (state, action) => {
 
     case "setAll":
       return {
+        id: action.payload.id,
         profilePic: action.payload.profilePic,
         name: action.payload.name,
         email: action.payload.email,

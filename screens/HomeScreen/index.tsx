@@ -16,17 +16,17 @@ import {
   Ionicons,
 } from "@expo/vector-icons";
 import { Genres } from "../../mocks/Genres";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, RouteProp } from "@react-navigation/native";
 import { api } from "../../utils/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BookProps, IGenresProps, UserProps } from "../../utils/types";
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<RouteProp>();
   const [genres, setGenres] = useState<IGenresProps[]>([]);
   const [books, setBooks] = useState<BookProps[]>([]);
   const [currentUser, setCurrentUser] = useState<UserProps>([]);
-  const [firstName, setFirstName] = useState("");
+  const [firstName, setFirstName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [isSelected, setIsSelected] = useState();
 
@@ -44,45 +44,6 @@ const HomeScreen = () => {
       setLoading(false);
     });
   }, []);
-
-  // useEffect(() => {
-  //   const fetchGenres = async () => {
-  //     try {
-  //       await api.get("/genres").then((response) => {
-  //         setGenres(response.data);
-  //       });
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   fetchGenres();
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setLoading(true);
-  //     try {
-  //       await api.get("/books").then((data) => {
-  //         setBooks(data.data);
-  //       });
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.log(error);
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
-
-  // useEffect(() => {
-  //   const getUser = async () => {
-  //     const res = await AsyncStorage.getItem("user");
-  //     setCurrentUser(JSON.parse(res));
-  //     let firstName = JSON.parse(res);
-  //     setFirstName(firstName.name.split(" ").slice(0, 1).join(" "));
-  //   };
-  //   getUser();
-  // }, []);
 
   return (
     <ScrollView

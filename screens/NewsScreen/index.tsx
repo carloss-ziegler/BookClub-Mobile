@@ -9,10 +9,9 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Books } from "../../mocks/Books";
 
 const NewsScreen = ({ navigation }) => {
-  const [books] = useState(Books);
+  const [books] = useState([]);
 
   return (
     <View className="flex-1 bg-[#e5e5e5] p-5">
